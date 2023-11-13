@@ -1,0 +1,15 @@
+meta {
+  name: deleteFile
+  type: http
+  seq: 2
+}
+
+delete {
+  url: http://localhost:4000/api/slideshow/653680d0e868532fa6bf0f4f/6548ab0dbaf2d7ce6b175bf6
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

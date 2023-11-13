@@ -1,53 +1,49 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
+const cron = require('node-cron');
 const cors = require('cors');
 require('dotenv').config();
 
+const { initializeCamions } = require('./Controllers/CamionController');
+
+const userRoutes = require('./Routes/UserRoutes');
+const camionRoutes = require('./Routes/CamionRoutes');
+const veilleRoutes = require('./Routes/VeilleRoutes');
+const slideshowRoutes = require('./Routes/SlideshowRoutes');
+const mediaRoute = require('./Routes/MediaRoute');
 
 const app = express();
 
-// Middleware pour parser les requêtes JSON
-app.use(bodyParser.json());
-
-app.use(cors());
-
-// Connexion à MongoDB
-mongoose.connect('mongodb://localhost:27017/truckDisplay', { useNewUrlParser: true, useUnifiedTopology: true })
+// Connecter à MongoDB
+mongoose.connect('mongodb://127.0.0.1:27017/daudruy', { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('Connected to MongoDB'))
-    .catch(err => console.error('Could not connect to MongoDB', err));
+    .catch(err => console.error('Could not connect to MongoDB...', err));
 
-// Import des modèles
-const Camion = require('./Models/CamionSchema');
-const Media = require('./Models/MediaSchema');
-const User = require('./Models/UserSchema');
+// Middleware pour utiliser cors
+app.use(cors()); // Utilisez cors ici - cela permettra les requêtes cross-origin
 
-// Import des routes
-const mediaRoutes = require('./Routes/MediaRoutes');
-const camionRoutes = require('./Routes/CamionRoutes');
-const authRoutes = require('./Routes/UserRoutes');
-const settingsRoutes = require('./Routes/SettingsRoutes');
+// Middleware pour parser le JSON
+app.use(express.json());
 
-
-
-
-// Utilisation des routes pour les camions
+try {
+    initializeCamions();
+} catch (error) {
+    console.error('Error while initializing accident document', error);
+}
+// Routes
+app.use('/api/auth', userRoutes);
 app.use('/camions', camionRoutes);
-// Utilisation des routes pour les médias
-app.use('/media-management', mediaRoutes);
-// Route statique pour les médias
-app.use('/media', express.static('media'));
-// Utilisation des routes pour l'authentification
-app.use('/auth', authRoutes);
-// Utilisation des routes pour les paramètres
-app.use('/settings', settingsRoutes);
+app.use('/api/veille', veilleRoutes);
+app.use('/api/slideshow', slideshowRoutes);
+app.use('/api/media', mediaRoute);
 
 
-
-
-
-
-const PORT = 4000;
-app.listen(PORT, () => {
-    console.log(`Server started on http://localhost:${PORT}`);
+// Middleware pour gérer les erreurs
+app.use((err, req, res, next) => {
+    console.error("error",err.stack);
+    res.status(500).send('Something broke!');
 });
+
+// Démarrer le serveur
+const port = process.env.PORT || 4000;
+app.listen(port, () => console.log(`Listening on port ${port}...`));

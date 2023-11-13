@@ -1,0 +1,21 @@
+meta {
+  name: updateSlideshowMedia
+  type: http
+  seq: 5
+}
+
+patch {
+  url: http://localhost:4000/api/slideshow/6548bb2fd22cba2470d77d49/6548f9107f9d6e4fc90059bd
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+      "duration": "10"
+  }
+}
