@@ -32,7 +32,7 @@ try {
 }
 // Routes
 app.use('/api/auth', userRoutes);
-app.use('/camions', camionRoutes);
+app.use('/api/camion', camionRoutes);
 app.use('/api/veille', veilleRoutes);
 app.use('/api/slideshow', slideshowRoutes);
 app.use('/api/media', mediaRoute);

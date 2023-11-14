@@ -3,14 +3,14 @@ import { api } from "../helpers/api";
 
 const API_URL = config.API_URL;
 
-export const accidentService = {
-  getAccident,
-  updateAccident,
+export const camionService = {
+  getCamions,
+  updateCamions,
 };
 
-function getAccident() {
+function getCamions() {
   return api
-    .fetchWithAuthorization(`${API_URL}/api/accident`, {
+    .fetchWithAuthorization(`${API_URL}/api/camion`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -20,9 +20,9 @@ function getAccident() {
     .catch(handleError);
 }
 
-function updateAccident(dataToUpdate) {
+function updateCamions(dataToUpdate) {
   return api
-    .fetchWithAuthorization(`${API_URL}/api/accident`, {
+    .fetchWithAuthorization(`${API_URL}/api/camion`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

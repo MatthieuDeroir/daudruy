@@ -1,7 +1,7 @@
 import { Grid } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
-import AccidentPanel from "./accidentPanel/AccidentPanel";
+import CamionPanel from "./camionPanel/CamionPanel";
 import Preview from "./preview/Preview";
 import SlideshowList from "./slideshow/SlideshowList";
 import { use } from "i18next";
@@ -40,7 +40,7 @@ function Dashboard() {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} sm={4}>
-        <AccidentPanel />
+        <CamionPanel />
       </Grid>
       <Grid item xs={12} sm={4}>
         <Preview />

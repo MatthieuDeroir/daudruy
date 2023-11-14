@@ -55,9 +55,12 @@ exports.deleteCamion = async (req, res) => {
 };
 
 exports.updateCamions = async (req, res) => {
+    console.log(req.body);
     try {
         await Camion.deleteMany({});
-        const camions = await Camion.insertMany(req.body);
+
+        // ajoute date_appel: new Date() à chaque camion
+         const camions = await Camion.insertMany(req.body.map(camion => ({...camion, date_appel: new Date()})));
         res.status(201).send(camions);
     } catch (error) {
         res.status(400).send(error.message);
