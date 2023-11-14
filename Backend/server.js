@@ -5,6 +5,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const { initializeCamions } = require('./Controllers/CamionController');
+const { initializeVeille } = require('./Controllers/VeilleController');
 
 const userRoutes = require('./Routes/UserRoutes');
 const camionRoutes = require('./Routes/CamionRoutes');
@@ -27,8 +28,9 @@ app.use(express.json());
 
 try {
     initializeCamions();
+    initializeVeille();
 } catch (error) {
-    console.error('Error while initializing accident document', error);
+    console.error('Error while initializing', error);
 }
 // Routes
 app.use('/api/auth', userRoutes);
