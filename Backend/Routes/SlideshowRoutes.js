@@ -6,7 +6,7 @@ const authMiddleware = require("../Middlewares/authMiddleware");
 // Route pour obtenir tous les slideshows
 router
   .route("/")
-  .get(authMiddleware.protect, slideshowController.getAllSlideshows)
+  .get( slideshowController.getAllSlideshows)
   .post(authMiddleware.protect, slideshowController.createSlideshow);
 
 // Route pour créer un nouveau slideshow

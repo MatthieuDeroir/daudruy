@@ -6,7 +6,7 @@ const authMiddleware = require("../Middlewares/authMiddleware");
 
 router
   .route("/get-veille")
-  .get(authMiddleware.protect, veilleController.getVeille);
+  .get(veilleController.getVeille);
 
 router
   .route("/update-days")

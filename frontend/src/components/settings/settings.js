@@ -203,7 +203,7 @@ function Settings() {
                       value={[veille.start, veille.stop]}
                       min={0}
                       max={24}
-                      step={0.01}
+                      step={1}
                       marks={[
                         { value: 0, label: "0h" },
                         { value: 6, label: "6h" },
