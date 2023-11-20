@@ -6,7 +6,9 @@ exports.initializeSlideshowStatus = async () => {
 
         if (existingStatus.length === 0) {
             const slideshowStatus = new SlideshowStatus({
+                slideshowId: null,
                 isRunning: false,
+                isTesting: false,
             });
 
             await slideshowStatus.save();
@@ -27,13 +29,13 @@ exports.getSlideshowStatus = async (req, res) => {
 
 exports.updateSlideshowStatus = async (req, res) => {
     try {
-        console.log(req.body);
+        console.log('test',req.body);
         // Supprimez tous les documents de SlideshowStatus
         await SlideshowStatus.deleteMany();
 
         // Ajoutez la logique pour mettre à jour le statut du diaporama en fonction de req.body
-        const { slideshowId, isRunning } = req.body;
-        console.log(slideshowId, isRunning);
+        const { slideshowId, isRunning, isTesting } = req.body;
+        console.log(slideshowId, isRunning,isTesting);
         // Assurez-vous que slideshowId est un ObjectId valide s'il est fourni
         const validObjectId = mongoose.Types.ObjectId.isValid(slideshowId);
         
@@ -42,6 +44,7 @@ exports.updateSlideshowStatus = async (req, res) => {
             const newSlideshowStatus = new SlideshowStatus({
                 slideshowId,
                 isRunning,
+                isTesting,
             });
 
             // Enregistrez le nouveau document dans la base de données

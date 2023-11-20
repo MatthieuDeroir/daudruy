@@ -10,6 +10,10 @@ const SlideshowStatusSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  isTesting : {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const SlideshowStatus = mongoose.model('SlideshowStatus', SlideshowStatusSchema);

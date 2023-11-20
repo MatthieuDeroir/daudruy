@@ -7,11 +7,12 @@ import CamionPage from "./pages/CamionPage";
 import MediasPage from "./pages/MediasPage";
 import { slideshowStatutsService } from "./services/SlideshowStatutsService";
 import "./Global.css";
+import TestPage from "./pages/TestPage";
 
 function App() {
   const [camionsData, setCamionsData] = useState([]);
   const [isVeilleMode, setIsVeilleMode] = useState(false);
-
+  const [isTesting, setIsTesting] = useState(false);
   const [currentSlideshow, setCurrentSlideshow] = useState({});
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
 
@@ -27,12 +28,12 @@ function App() {
 
       setIsVeilleMode(checkIsInVeillePeriod(veilleRes[0]));
       setCamionsData(camionsRes);
-      console.log(camionsRes);
       const currentSlideshowId = slideshowStatusRes[0]?.slideshowId;
       if (slideshowStatusRes[0]?.isRunning) {
         const foundSlideshow = slideshowRes.data.slideshows.find(
           (slideshow) => slideshow._id === currentSlideshowId
         );
+    
 
         // Vérifie si le diaporama actuel est le même que le précédent
         if (!_.isEqual(currentSlideshow, foundSlideshow)) {
@@ -43,16 +44,18 @@ function App() {
         // Si le diaporama n'est plus en cours, réinitialise currentSlideshow
         setCurrentSlideshow({});
       }
-      console.log("Data fetched.");
+      if (slideshowStatusRes[0]?.isTesting) {
+        setIsTesting(true);
+      }else{
+        setIsTesting(false);
+      }
     };
-    console.log("Fetching data...");
     fetchData();
     const interval = setInterval(fetchData, 5000);
     return () => clearInterval(interval);
   }, [currentSlideshow]);
 
   useEffect(() => {
-    console.log("Le diaporama actuel a été mis à jour :", currentSlideshow);
 
     const mediaInterval = setInterval(
       () => {
@@ -81,14 +84,17 @@ function App() {
 
   return (
     <div>
-      {isVeilleMode ? (
+      {isTesting? (<TestPage/>):(isVeilleMode ? (
         <p>Vous êtes actuellement dans la période de veille.</p>
       ) : currentSlideshow.media && currentSlideshow.media.length > 0 ? (
         currentSlideshow.media.map((media, index) => (
           <div
             key={media._id}
             style={{
+              maxHeight: "240px",
               display: index === currentMediaIndex ? "block" : "none",
+              maxWidth: "480px"
+             
             }}
           >
             {media.type === "Panneau" ? (
@@ -100,7 +106,7 @@ function App() {
         ))
       ) : (
         <CamionPage camionsData={camionsData} />
-      )}
+      ))}
     </div>
   );
 }

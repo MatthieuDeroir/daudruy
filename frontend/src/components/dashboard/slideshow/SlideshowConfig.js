@@ -40,18 +40,16 @@ function SlideshowConfig(props) {
   };
 
   async function uploadMedia(event) {
+    event.preventDefault();
     if (event.target.files[0] !== undefined) {
       if (event.target.files[0].type === "video/mp4") {
-        event.preventDefault();
         const id = props.slideshow._id;
         await mediaService
           .uploadMedia(event.target.files[0], id)
           .then((data) => {
-            console.log("Uploaded data", data);
             var newMedia = data;
             newMedia.type = "video";
             const updatedMediaList = [...props.slideshow.media, newMedia];
-            console.log("updatedMediaList", updatedMediaList);
             props.setSlideshow({
               ...props.slideshow,
               media: updatedMediaList,
@@ -65,7 +63,6 @@ function SlideshowConfig(props) {
         event.target.files[0].type === "image/jpeg" ||
         event.target.files[0].type === "image/jpg"
       ) {
-        event.preventDefault();
         const id = props.slideshow._id;
         await mediaService
           .uploadMedia(event.target.files[0], id)
@@ -86,6 +83,7 @@ function SlideshowConfig(props) {
       }
     }
   }
+
   function handleDurationChange(event, mediaId) {
     const newDuration = event.target.value;
 
@@ -103,6 +101,7 @@ function SlideshowConfig(props) {
     });
     props.setSlideshow({ ...props.slideshow, media: updatedMediaList });
   }
+
   function handleOrderChange(newOrder) {
     console.log(newOrder);
     props.setSlideshow({ ...props.slideshow, media: newOrder });
@@ -195,7 +194,10 @@ function SlideshowConfig(props) {
                 type="file"
                 id="inputFile"
                 style={{ display: "none" }}
-                onChange={uploadMedia}
+                onChange={(event) => {
+                  event.preventDefault();
+                  uploadMedia(event);
+                }}
               />
               <Menu
                 id="basic-menu"
@@ -232,18 +234,23 @@ function SlideshowConfig(props) {
                     setList={handleOrderChange}
                   >
                     {props.slideshow.media.map((media, index) => (
-                      <TableRow key={index}>
+                      <TableRow sx={{ width: "100%" }} key={index}>
                         <TableCell
-                          sx={{ borderBottom: 0, p: 0, textAlign: "center" }}
+                          sx={{
+                            borderBottom: 0,
+                            p: 0,
+                            textAlign: "center",
+                            width: "50%",
+                          }}
                         >
                           {media.type.split("/")[0] === "video" ? (
                             <Box
                               component="video"
                               sx={{
-                                minHeight: "calc(15vh)",
-                                minWidth: "calc(15vh)",
-                                maxWidth: "calc(15vh)",
-                                maxHeight: "calc(15vh)",
+                                minHeight: "calc(8vh)",
+                                minWidth: "calc(16vh)",
+                                maxWidth: "calc(16vh)",
+                                maxHeight: "calc(8vh)",
                               }}
                               alt={media.originalFilename}
                               src={media.path}
@@ -252,10 +259,10 @@ function SlideshowConfig(props) {
                             <Box
                               component="img"
                               sx={{
-                                minHeight: "calc(15vh)",
-                                minWidth: "calc(15vh)",
-                                maxWidth: "calc(15vh)",
-                                maxHeight: "calc(15vh)",
+                                minHeight: "calc(8vh)",
+                                minWidth: "calc(16vh)",
+                                maxWidth: "calc(16vh)",
+                                maxHeight: "calc(8vh)",
                               }}
                               alt={media.originalFilename}
                               src={media.path}
@@ -265,7 +272,7 @@ function SlideshowConfig(props) {
                           )}
                         </TableCell>
 
-                        <TableCell p={0} align="right">
+                        <TableCell sx={{ width: "40%" }} p={0}>
                           <TextField
                             value={media.duration}
                             onChange={(e) => handleDurationChange(e, media._id)}
@@ -276,7 +283,7 @@ function SlideshowConfig(props) {
                             style={{ width: "90px" }}
                           />
                         </TableCell>
-                        <TableCell p={0} align="right">
+                        <TableCell p={0} sx={{ width: "10%" }}>
                           <IconButton
                             sx={{ p: 0 }}
                             onClick={(e) => {

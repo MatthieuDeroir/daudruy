@@ -33,10 +33,11 @@ function CamionPanel() {
     },
   ]);
 
+  // nouvel état pour suivre si des modifications ont été faites
+  const [changesMade, setChangesMade] = useState(false);
+
   const handleChange = (index) => (event) => {
-    console.log("handleChange",event.target);
     const { name, value } = event.target;
-    console.log("name", name, "value", value);
     setCamionsData((prevData) => {
       const newData = [...prevData];
       newData[index] = {
@@ -45,6 +46,9 @@ function CamionPanel() {
       };
       return newData;
     });
+
+    // set changesMade to true lorsque des modifications sont faites
+    setChangesMade(true);
   };
 
   const handleActionSwitch = (index) => () => {
@@ -56,6 +60,9 @@ function CamionPanel() {
       };
       return newData;
     });
+
+    // set changesMade to true lorsque des modifications sont faites
+    setChangesMade(true);
   };
 
   const handleDestinationSwitch = (index) => () => {
@@ -68,16 +75,20 @@ function CamionPanel() {
       };
       return newData;
     });
+
+    // set changesMade to true lorsque des modifications sont faites
+    setChangesMade(true);
   };
 
   const handleSubmit = () => {
-    console.log("handleSubmit", camionsData);
     camionService.updateCamions(camionsData).then((data) => {});
+
+    // set changesMade back to false après la soumission du formulaire
+    setChangesMade(false);
   };
 
   useEffect(() => {
     camionService.getCamions().then((data) => {
-      // Mettez à jour correctement l'état local avec les données reçues
       setCamionsData(data);
     });
   }, []);
@@ -101,11 +112,12 @@ function CamionPanel() {
           <Box className="headerRight">
             <IconButton
               className="headerButton"
-              onClick={() => {
-                handleSubmit();
-              }}
+              onClick={handleSubmit}
+              disabled={!changesMade} // grise le bouton si aucune modification n'a été faite
             >
-              <SaveIcon sx={{ color: "secondary.main" }} />
+              <SaveIcon
+                sx={{ color: changesMade ? "secondary.main" : "#808080" }}
+              />
             </IconButton>
           </Box>
         </Stack>
@@ -122,44 +134,29 @@ function CamionPanel() {
                   justifyContent="space-between"
                   marginBottom={2}
                 >
-                  <Typography variant="body1">Immatriculation </Typography>
                   <TextField
-                    style={{ width: "30%" }}
+                    style={{ width: "40%" }}
                     margin="normal"
                     type="text"
                     name={`immatriculation`}
                     value={camion.immatriculation}
                     onChange={handleChange(index)}
                   />
-                </Box>
 
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="space-between"
-                  marginBottom={2}
-                >
-                  <Typography variant="body1">Action </Typography>
                   <Button
-                    variant="contained"
+                    style={{ width: "5%" }}
                     onClick={handleActionSwitch(index)}
+                    sx={{ color: "secondary.main" }}
                   >
                     {camion.action === "wait" ? "Wait" : "Go"}
                   </Button>
-                </Box>
 
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="space-between"
-                  marginBottom={2}
-                >
-                  <Typography variant="body1">Destination </Typography>
                   <Button
-                    variant="contained"
+                    style={{ width: "15%" }}
                     onClick={handleDestinationSwitch(index)}
+                    sx={{ color: "secondary.main" }}
                   >
-                    {camion.destination === "Accueil" ? "Accueil" : "Balance"}
+                    {camion.destination}
                   </Button>
                 </Box>
               </div>

@@ -9,7 +9,11 @@ const Slideshow = require("../Models/SlideshowModel");
 exports.uploadFile = async (req, res) => {
   const slideshowId = req.body.slideshowId;
   const originalFilename = req.file.originalname;
-  const hashedFilename = crypto.createHash("sha256").update(originalFilename).digest("hex");
+  const uniqueValue = Math.random().toString();
+  const hashedFilename = crypto
+    .createHash("sha256")
+    .update(originalFilename + uniqueValue)
+    .digest("hex");
   const format = req.file.mimetype.split("/")[1];
   const newpath = path.join(__dirname, "../../frontend/public/media/");
   const oldPath = req.file.path;
@@ -19,15 +23,22 @@ exports.uploadFile = async (req, res) => {
   fs.rename(oldPath, newPathWithFileName, async (err) => {
     if (err) {
       console.log(err);
-      return res.status(500).send({ message: "Le téléchargement du fichier a échoué", code: 500 });
+      return res
+        .status(500)
+        .send({ message: "Le téléchargement du fichier a échoué", code: 500 });
     }
 
     // Si le fichier est une vidéo, obtenez sa durée.
-    if (type.startsWith('video/')) {
+    if (type.startsWith("video/")) {
       ffmpeg.ffprobe(newPathWithFileName, async function (err, metadata) {
         if (err) {
           console.error(err);
-          return res.status(500).send({ message: "Échec lors de la récupération de la durée de la vidéo", code: 500 });
+          return res
+            .status(500)
+            .send({
+              message: "Échec lors de la récupération de la durée de la vidéo",
+              code: 500,
+            });
         }
 
         const videoDuration = metadata.format.duration;

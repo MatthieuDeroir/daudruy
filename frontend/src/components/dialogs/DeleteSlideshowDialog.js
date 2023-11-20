@@ -24,7 +24,7 @@ function DeleteSlideshowDialog({ open, onClose, onDelete, slideshowToDelete}) {
         <Button onClick={onClose} sx={{ color: "secondary.main" }}>
           {t('cancel')}
         </Button>
-        <Button onClick={() => onDelete(slideshowToDelete._id)} sx={{ color: "secondary.main" }}>
+        <Button onClick={() => onDelete(slideshowToDelete)} sx={{ color: "secondary.main" }}>
           {t('delete')}
         </Button>
       </DialogActions>

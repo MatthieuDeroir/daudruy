@@ -1,5 +1,6 @@
 import {
   Box,
+  CircularProgress,
   Grid,
   IconButton,
   Paper,
@@ -70,7 +71,7 @@ function SlideshowList(props) {
     setSlideshowToPlay(data);
   }
   function stopSlideshow(slideshow) {
-    const data = { slideshowId: slideshow._id, isRunning: false };
+    const data = { slideshowId: slideshow._id, isRunning: false, isTesting: false };
     slideshowStatutsService.updateSlideshowStatus(data);
     setSlideshowToPlay(data);
   }
@@ -132,6 +133,12 @@ function SlideshowList(props) {
                             <StopIcon
                               sx={{ fontSize: 15, color: "secondary.main" }}
                             />
+                             <CircularProgress size={15}    sx={{
+                                  top: -0.5,
+                                  left: -0.5,
+                                  position: "absolute",
+                                  color: "secondary.main",
+                                }}/>
                           </IconButton>
                         </TableCell>
                       ) : (
