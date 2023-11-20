@@ -15,20 +15,30 @@ import FolderIcon from "@mui/icons-material/Folder";
 import AddIcon from "@mui/icons-material/Add";
 import React, { useState } from "react";
 import { slideshowService } from "../../../services/SlideshowService";
+import AddSlideshowDialog from "../../dialogs/AddSlideshowDialog";
+import { slideshowStatutsService } from "../../../services/SlideshowStatutsService";
+import { useEffect } from "react";
+
 import DeleteIcon from "@mui/icons-material/Delete";
 import DeleteSlideshowDialog from "../../dialogs/DeleteSlideshowDialog";
-import AddSlideshowDialog from "../../dialogs/AddSlideshowDialog";
-import { useEffect } from "react";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import StopIcon from "@mui/icons-material/Stop";
 
 function SlideshowList(props) {
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [slideshowToDelete, setSlideshowToDelete] = useState({});
+  const [slideshowToPlay, setSlideshowToPlay] = useState({});
+  useEffect(() => {
+    slideshowStatutsService.getSlideshowStatus().then((data) => {
+      console.log("data", data[0]);
+      setSlideshowToPlay(data[0]);
+    });
+  }, []);
 
   async function AddSlideshow(name) {
     const data = { name: name };
     await slideshowService.createSlideshow(data).then((data) => {
-
       props.setSlideshows([...props.slideshows, data.data.slideshow]);
       closeDialog();
     });
@@ -54,6 +64,17 @@ function SlideshowList(props) {
     setAddDialogOpen(false);
   }
 
+  function playSlideshow(slideshow) {
+    const data = { slideshowId: slideshow._id, isRunning: true };
+    slideshowStatutsService.updateSlideshowStatus(data);
+    setSlideshowToPlay(data);
+  }
+  function stopSlideshow(slideshow) {
+    const data = { slideshowId: slideshow._id, isRunning: false };
+    slideshowStatutsService.updateSlideshowStatus(data);
+    setSlideshowToPlay(data);
+  }
+  
   return (
     <>
       <Grid item xs={12}>
@@ -80,56 +101,81 @@ function SlideshowList(props) {
               >
                 <AddIcon sx={{ color: "secondary.main" }} />
               </IconButton>
-
-              {/*  <input
-              type="file"
-              id="inputFile"
-              style={{ display: "none" }}
-              onChange={goToCrop}
-            /> */}
             </Box>
           </Stack>
-            {props.slideshows ? (
-              <Box className="containerPage">
-                {props.slideshows.map((slideshow) => (
-                  <Table size="big" key={slideshow._id}>
-                    <TableBody>
-                      <TableRow hover>
-                        <TableCell
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            props.setSlideshow(slideshow);
-                          }}
-                        >
-                          {slideshow.name}
-                        </TableCell>
+          {props.slideshows ? (
+            <Box className="containerPage">
+              {props.slideshows.map((slideshow) => (
+                <Table size="big" key={slideshow._id}>
+                  <TableBody>
+                    <TableRow hover>
+                      <TableCell
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          props.setSlideshow(slideshow);
+                        }}
+                      >
+                        {slideshow.name}
+                      </TableCell>
+                     
+                      {slideshowToPlay.slideshowId == slideshow._id &&
+                      slideshowToPlay.isRunning ? (
                         <TableCell sx={{ p: 0 }} align="right">
                           <IconButton
                             sx={{ p: 0 }}
                             size="small"
                             onClick={(e) => {
                               e.stopPropagation();
-                              openDeleteDialog(slideshow);
+                              stopSlideshow(slideshow);
                             }}
                           >
-                            <DeleteIcon
+                            <StopIcon
                               sx={{ fontSize: 15, color: "secondary.main" }}
                             />
                           </IconButton>
                         </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                ))}
-              </Box>
-            ) : (
-              <Box className="infoPage">
-                <Typography sx={{ color: "text.secondary" }}>
-                  {t("slideshowListEmptyText")}
-                </Typography>
-              </Box>
-            )}
-
+                      ) : (
+                        <TableCell sx={{ p: 0 }} align="right">
+                          <IconButton
+                            sx={{ p: 0 }}
+                            size="small"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              playSlideshow(slideshow);
+                            }}
+                          >
+                            <PlayArrowIcon
+                              sx={{ fontSize: 15, color: "secondary.main" }}
+                            />
+                          </IconButton>
+                        </TableCell>
+                      )}
+                      <TableCell sx={{ p: 0 }} align="right">
+                        <IconButton
+                          sx={{ p: 0 }}
+                          size="small"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openDeleteDialog(slideshow);
+                          }}
+                        >
+                          <DeleteIcon
+                            sx={{ fontSize: 15, color: "secondary.main" }}
+                          />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              ))}
+            </Box>
+          ) : (
+            <Box className="infoPage">
+              <Typography sx={{ color: "text.secondary" }}>
+                {t("slideshowListEmptyText")}
+              </Typography>
+            </Box>
+          )}
         </Paper>
       </Grid>
       <DeleteSlideshowDialog

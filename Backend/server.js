@@ -6,13 +6,14 @@ require('dotenv').config();
 
 const { initializeCamions } = require('./Controllers/CamionController');
 const { initializeVeille } = require('./Controllers/VeilleController');
+const { initializeSlideshowStatus } = require('./Controllers/SlideshowStatutController');
 
 const userRoutes = require('./Routes/UserRoutes');
 const camionRoutes = require('./Routes/CamionRoutes');
 const veilleRoutes = require('./Routes/VeilleRoutes');
 const slideshowRoutes = require('./Routes/SlideshowRoutes');
 const mediaRoute = require('./Routes/MediaRoute');
-
+const slideshowStatusRoute = require('./Routes/SlideshowStatutsRoutes');
 const app = express();
 
 // Connecter à MongoDB
@@ -29,6 +30,7 @@ app.use(express.json());
 try {
     initializeCamions();
     initializeVeille();
+    initializeSlideshowStatus();
 } catch (error) {
     console.error('Error while initializing', error);
 }
@@ -38,6 +40,7 @@ app.use('/api/camion', camionRoutes);
 app.use('/api/veille', veilleRoutes);
 app.use('/api/slideshow', slideshowRoutes);
 app.use('/api/media', mediaRoute);
+app.use('/api/slideshow-status', slideshowStatusRoute)
 
 
 // Middleware pour gérer les erreurs
