@@ -12,7 +12,7 @@ exports.initializeCamions = async () => {
                 const camion = new Camion({
                     immatriculation: '00000000',
                     action: 'wait',
-                    destination: 'balance',
+                    destination: 'Balance',
                     date_appel: new Date()
                 });
                 await camion.save();
@@ -55,7 +55,6 @@ exports.deleteCamion = async (req, res) => {
 };
 
 exports.updateCamions = async (req, res) => {
-    console.log(req.body);
     try {
         await Camion.deleteMany({});
 
@@ -63,6 +62,7 @@ exports.updateCamions = async (req, res) => {
          const camions = await Camion.insertMany(req.body.map(camion => ({...camion, date_appel: new Date()})));
         res.status(201).send(camions);
     } catch (error) {
+        console.log(error);
         res.status(400).send(error.message);
     }
 };

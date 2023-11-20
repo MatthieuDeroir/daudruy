@@ -3,15 +3,20 @@ const { app, BrowserWindow } = require('electron')
 function createWindow () {
 
   const win = new BrowserWindow({
-    width: 960,
-    height: 480,
-    webPreferences: {
-      nodeIntegration: true
-    }
+      width: 480,
+      height: 240,
+      x: 0,
+      y: 0,
+      frame: false,
+      webPreferences: {
+        nodeIntegration: true,
+        enableRemoteModule: true,
+        contextIsolation: false,
+      },
   })
 
   win.removeMenu()
-  win.loadURL('http://localhost:3001');
+  win.loadURL('http://localhost:3000');
 
 
   win.webContents.openDevTools()

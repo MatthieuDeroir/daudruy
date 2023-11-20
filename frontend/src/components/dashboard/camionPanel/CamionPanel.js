@@ -64,7 +64,7 @@ function CamionPanel() {
       newData[index] = {
         ...newData[index],
         destination:
-          newData[index].destination === "accueil" ? "balance" : "accueil",
+          newData[index].destination === "Accueil" ? "Balance" : "Accueil",
       };
       return newData;
     });
@@ -159,7 +159,7 @@ function CamionPanel() {
                     variant="contained"
                     onClick={handleDestinationSwitch(index)}
                   >
-                    {camion.destination === "accueil" ? "Balance" : "Accueil"}
+                    {camion.destination === "Accueil" ? "Accueil" : "Balance"}
                   </Button>
                 </Box>
               </div>
