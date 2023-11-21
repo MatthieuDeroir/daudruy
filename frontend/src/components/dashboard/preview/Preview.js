@@ -32,7 +32,7 @@ function Preview() {
               src="http://localhost:2000"
               title="Preview"
               style={{ border: "none", height: "240px", width: "480px" }}
-            ></iframe>}
+            ></iframe> }
           </Box>
         </Paper>
       </Grid>
