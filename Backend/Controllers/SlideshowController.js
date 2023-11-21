@@ -186,7 +186,7 @@ exports.deleteSlideshow = async (req, res) => {
 
     // Supprimer les fichiers médias associés du système de fichiers
     const mediaDeletions = slideshow.media.map(media => {
-      const mediaPath = "../../frontend/public/media/" + media.path;
+      const mediaPath = "../../frontend/build/media/" + media.path;
       return fs.promises.unlink(mediaPath).catch(err => {
         console.error(err);
         // Si le fichier n'existe pas, ce n'est pas grave, continuer la suppression
@@ -268,10 +268,10 @@ exports.deleteMediaFromSlideshow = async (req, res) => {
     }
 
     console.log("deleteMediaFromSlideshow01", media);
-    console.log(`../../../daudruy/frontend/public${media.path}`);
+    console.log(`../../../daudruy/frontend/build${media.path}`);
     
     fs.unlink(
-      "../../daudruy/frontend/public" + media.path,
+      "../../daudruy/frontend/build" + media.path,
       async (err) => {
         if (err) {
           console.error(err);

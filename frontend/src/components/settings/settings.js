@@ -8,33 +8,27 @@ import {
   Typography,
   Switch,
   Slider,
-  LinearProgress,
   CircularProgress,
 } from "@mui/material";
-import { useTranslation } from "react-i18next";
 
 import SettingsIcon from "@mui/icons-material/Settings";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import StopIcon from "@mui/icons-material/Stop";
-import LockIcon from "@mui/icons-material/Lock";
-import StorageIcon from "@mui/icons-material/Storage";
 import BugReportIcon from "@mui/icons-material/BugReport";
 import PhoneIcon from "@mui/icons-material/Phone";
 import ModeNightIcon from "@mui/icons-material/ModeNight";
+import LockIcon from "@mui/icons-material/Lock";
 
+import ChangePasswordDialog from "../dialogs/ChangePasswordDialog";
 import { useThemeMode } from "../../context/ThemeModeContext";
 import { veilleService } from "../../services/VeilleService";
-import ChangePasswordDialog from "../dialogs/ChangePasswordDialog";
 import { slideshowStatutsService } from "../../services/SlideshowStatutsService";
 
 function Settings() {
-  const { t } = useTranslation();
-  const [modalOpen, setModalOpen] = useState(false);
   const [veille, setVeille] = useState({});
-  const totalSize = 100; // Taille totale en Go
-  const usedSize = 90; // Taille utilisée en Go
   const { themeMode, toggleTheme } = useThemeMode();
+  const [modalOpen, setModalOpen] = useState(false);
   const [slideshowToPlay, setSlideshowToPlay] = useState({});
   useEffect(() => {
     slideshowStatutsService.getSlideshowStatus().then((data) => {
@@ -62,19 +56,11 @@ function Settings() {
 
   useEffect(() => {}, []);
 
-  const toggleModal = () => {
-    setModalOpen(!modalOpen);
-  };
-
   const convertToSliderFormat = (timeString) => {
     if (timeString && !isNaN(timeString)) {
       return Number(timeString);
     }
     return 0;
-  };
-
-  const convertFrom24HourFormat = (timeValue) => {
-    return `${timeValue}:00`; // Ajout de ":00" pour indiquer les minutes
   };
 
   const handleSliderChange = (event, newValue) => {
@@ -98,18 +84,27 @@ function Settings() {
     veilleService.updateVeille(updatedVeille).then((response) => {});
   };
   function playSlideshow(isTesting) {
-    const data = { slideshowId: slideshowToPlay.slideshowId, isRunning: false, isTesting: isTesting };
+    const data = {
+      slideshowId: slideshowToPlay.slideshowId,
+      isRunning: false,
+      isTesting: isTesting,
+    };
     slideshowStatutsService.updateSlideshowStatus(data);
     setSlideshowToPlay(data);
   }
   function stopSlideshow(isTesting) {
-
-    const data = { slideshowId: slideshowToPlay.slideshowId, isRunning: false, isTesting: isTesting };
+    const data = {
+      slideshowId: slideshowToPlay.slideshowId,
+      isRunning: false,
+      isTesting: isTesting,
+    };
     slideshowStatutsService.updateSlideshowStatus(data);
     setSlideshowToPlay(data);
   }
 
-  const percentage = (usedSize / totalSize) * 100;
+  const toggleModal = () => {
+    setModalOpen(!modalOpen);
+  };
 
   return (
     <>
@@ -126,7 +121,7 @@ function Settings() {
                   sx={{ color: "text.primary" }}
                   className="headerTitle"
                 >
-                  {t("settingsOf")}
+                  Paramètres
                 </Typography>
               </Box>
             </Stack>
@@ -140,26 +135,6 @@ function Settings() {
               <Grid container spacing={6}>
                 <Grid item xs={12} sm={12}>
                   <Stack spacing={2}>
-                    {/* <Stack
-                    onClick={toggleModal}
-                    direction="row"
-                    alignItems="center"
-                    spacing={3}
-                  >
-                    <IconButton disabled>
-                      <LockIcon sx={{ color: "text.secondary" }} />
-                    </IconButton>
-                    <Typography
-                      variant="h8"
-                      sx={{
-                        color: "text.primary",
-                        textTransform: "none",
-                        padding: "0",
-                      }}
-                    >
-                      {t("changePassword")}
-                    </Typography>
-                  </Stack> */}
                     <Stack
                       onClick={toggleTheme}
                       direction="row"
@@ -172,7 +147,7 @@ function Settings() {
                           <DarkModeIcon sx={{ color: "text.secondary" }} />
                         </IconButton>
                         <Typography variant="h8" sx={{ color: "text.primary" }}>
-                          {t("darkMode")}
+                          Thème sombre
                         </Typography>
                       </Stack>
                       <Switch
@@ -180,34 +155,36 @@ function Settings() {
                         color="secondary"
                       />
                     </Stack>
-                    {/*  <Stack
-                    onClick={toggleModal}
-                    direction="row"
-                    alignItems="center"
-                    spacing={3}
-                  >
-                    <IconButton disabled>
-                      <StorageIcon sx={{ color: "text.secondary" }} />
-                    </IconButton>
-
-                    <Box sx={{ flexGrow: 1 }}>
-                      <Typography variant="h8" sx={{ color: "text.primary" }}>
-                        {t("usedStorageSpace")}
-                      </Typography>
-                      <LinearProgress
-                        variant="determinate"
-                        value={percentage}
-                        color={percentage > 80 ? "error" : "secondary"}
-                      />
-                    </Box>
-                  </Stack> */}
-                    <Stack direction="row" alignItems="center" spacing={3}>
+                    <Stack  onClick={toggleModal} direction="row" alignItems="center" spacing={3}>
                       <IconButton disabled>
-                        <BugReportIcon sx={{ color: "text.secondary" }} />
+                        <LockIcon sx={{ color: "text.secondary" }} />
                       </IconButton>
-                      <Typography variant="h8" sx={{ color: "text.primary" }}>
-                        Test panneau
+                      <Typography
+                        variant="h8"
+                        sx={{
+                          color: "text.primary",
+                          textTransform: "none",
+                          padding: "0",
+                        }}
+                      >
+                        Changer mot de passe
                       </Typography>
+                    </Stack>
+                    <Stack
+                      onClick={toggleTheme}
+                      direction="row"
+                      justifyContent="space-between"
+                      alignItems="center"
+                      spacing={3}
+                    >
+                      <Stack spacing={3} direction="row" alignItems="center">
+                        <IconButton disabled>
+                          <BugReportIcon sx={{ color: "text.secondary" }} />
+                        </IconButton>
+                        <Typography variant="h8" sx={{ color: "text.primary" }}>
+                          Test panneau
+                        </Typography>
+                      </Stack>
                       {slideshowToPlay.isTesting ? (
                         <IconButton
                           sx={{ p: 0 }}
@@ -218,12 +195,11 @@ function Settings() {
                           }}
                         >
                           <StopIcon
-                            sx={{ fontSize: 20, color: "secondary.main" }}
+                            sx={{ fontSize: 40, color: "secondary.main" }}
                           />
                           <CircularProgress
-                            size={20}
+                            size={40}
                             sx={{
-                              top: -0.5,
                               left: -0.5,
                               position: "absolute",
                               color: "secondary.main",
@@ -233,7 +209,6 @@ function Settings() {
                       ) : (
                         <IconButton
                           sx={{ p: 0 }}
-
                           onClick={(e) => {
                             e.stopPropagation();
                             playSlideshow(true);
@@ -245,13 +220,6 @@ function Settings() {
                         </IconButton>
                       )}
                     </Stack>
-
-                    <Stack
-                      justifyContent="space-between"
-                      direction="row"
-                      alignItems="center"
-                      spacing={3}
-                    ></Stack>
 
                     <Stack
                       direction="row"
@@ -307,7 +275,7 @@ function Settings() {
           </Paper>
         </Grid>
       </Grid>
-      {/*   <ChangePasswordDialog open={modalOpen} onClose={toggleModal} /> */}
+        <ChangePasswordDialog open={modalOpen} onClose={toggleModal} />
     </>
   );
 }

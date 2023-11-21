@@ -11,7 +11,6 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { t } from "i18next";
 import FolderIcon from "@mui/icons-material/Folder";
 import AddIcon from "@mui/icons-material/Add";
 import React, { useState } from "react";
@@ -51,6 +50,9 @@ function SlideshowList(props) {
   }
 
   async function deleteSlideshow(eventToDelete) {
+    const data = { slideshowId: null, isRunning: false, isTesting: false };
+    await slideshowStatutsService.updateSlideshowStatus(data);
+    setSlideshowToPlay(data);
     await slideshowService.deleteSlideshow(eventToDelete).then((data) => {
       props.setSlideshows(
         props.slideshows.filter((slideshow) => slideshow._id !== eventToDelete)
@@ -71,11 +73,15 @@ function SlideshowList(props) {
     setSlideshowToPlay(data);
   }
   function stopSlideshow(slideshow) {
-    const data = { slideshowId: slideshow._id, isRunning: false, isTesting: false };
+    const data = {
+      slideshowId: slideshow._id,
+      isRunning: false,
+      isTesting: false,
+    };
     slideshowStatutsService.updateSlideshowStatus(data);
     setSlideshowToPlay(data);
   }
-  
+
   return (
     <>
       <Grid item xs={12}>
@@ -90,7 +96,7 @@ function SlideshowList(props) {
                 sx={{ color: "text.primary" }}
                 className="headerTitle"
               >
-                {t("Slideshow")}
+                Diaporamas
               </Typography>
             </Box>
             <Box className="headerRight">
@@ -118,8 +124,8 @@ function SlideshowList(props) {
                       >
                         {slideshow.name}
                       </TableCell>
-                     
-                      {slideshowToPlay.slideshowId == slideshow._id &&
+
+                      {slideshowToPlay.slideshowId === slideshow._id &&
                       slideshowToPlay.isRunning ? (
                         <TableCell sx={{ p: 0 }} align="right">
                           <IconButton
@@ -133,12 +139,15 @@ function SlideshowList(props) {
                             <StopIcon
                               sx={{ fontSize: 15, color: "secondary.main" }}
                             />
-                             <CircularProgress size={15}    sx={{
-                                  top: -0.5,
-                                  left: -0.5,
-                                  position: "absolute",
-                                  color: "secondary.main",
-                                }}/>
+                            <CircularProgress
+                              size={15}
+                              sx={{
+                                top: -0.5,
+                                left: -0.5,
+                                position: "absolute",
+                                color: "secondary.main",
+                              }}
+                            />
                           </IconButton>
                         </TableCell>
                       ) : (
@@ -179,7 +188,7 @@ function SlideshowList(props) {
           ) : (
             <Box className="infoPage">
               <Typography sx={{ color: "text.secondary" }}>
-                {t("slideshowListEmptyText")}
+                Ajoutez un diaporama "+"
               </Typography>
             </Box>
           )}

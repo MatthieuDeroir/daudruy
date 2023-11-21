@@ -12,9 +12,9 @@ import {
 
 import { userService } from "../../services/UserServices";
 
-
 function ChangePasswordDialog({ open, onClose }) {
   const [error, setError] = useState(null);
+  const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -36,22 +36,36 @@ function ChangePasswordDialog({ open, onClose }) {
 
     // Appeler le service d'authentification pour changer le mot de passe
     userService
-      .changePassword(newPassword)
+      .changePassword(oldPassword, newPassword)
       .then(() => {
         setError("");
-        onClose();
       })
       .catch((error) => {
-        console.log("Erreur", error.response.data.message);
-        setError(error.response.data.message);
+        console.log("Erreur", error);
+
+        setError(error);
+        return;
       });
+
+    setConfirmPassword("");
+    setOldPassword("");
+    setNewPassword("");
+    setError("");
+    onClose();
   }
 
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>Modifier mot de passe</DialogTitle>
       <DialogContent sx={{ padding: "0px 20px" }}>
-        <FormControl sx={{minWidth:"40vh"}}>
+        <FormControl sx={{ minWidth: "40vh" }}>
+          <TextField
+            sx={{ marginTop: "16px" }}
+            label="Ancien mot de passe"
+            type="password"
+            value={oldPassword}
+            onChange={(e) => setOldPassword(e.target.value)}
+          />
           <TextField
             sx={{ marginTop: "16px" }}
             label="Nouveau mot de passe"
@@ -91,8 +105,6 @@ function ChangePasswordDialog({ open, onClose }) {
         </Button>
       </DialogActions>
     </Dialog>
-
-    
   );
 }
 

@@ -1,5 +1,4 @@
 import { Box, Grid, IconButton, Paper, Stack, Typography } from "@mui/material";
-import { t } from "i18next";
 import VideoLabelIcon from "@mui/icons-material/VideoLabel";
 import React from "react";
 
@@ -18,7 +17,7 @@ function Preview() {
                 sx={{ color: "text.primary" }}
                 className="headerTitle"
               >
-                {t("preview")}
+                Aperçu
               </Typography>
             </Box>
           </Stack>
@@ -30,9 +29,9 @@ function Preview() {
             }}
           >
             <iframe
-              src="http://localhost:3000"
+              src="http://localhost:3001"
               title="Preview"
-              style={{ border: "none", height: "240px"}}
+              style={{ border: "none", height: "240px", width: "480px" }}
             ></iframe>
           </Box>
         </Paper>

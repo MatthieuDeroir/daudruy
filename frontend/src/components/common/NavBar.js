@@ -1,36 +1,24 @@
-import React, { useState } from "react";
+import React  from "react";
 import { BottomNavigation, BottomNavigationAction, Box } from "@mui/material";
 import { Link, useLocation } from "react-router-dom";
 
 import PermMediaIcon from "@mui/icons-material/PermMedia";
 import LogoutIcon from "@mui/icons-material/Logout";
-import KeyboardIcon from "@mui/icons-material/Keyboard";
 import SettingsIcon from "@mui/icons-material/Settings";
-import ScoreboardIcon from "@mui/icons-material/Scoreboard";
-/* 
-import AuthService from "../../services/authService";
-import DisconnectDialog from "../dialogs/DisconnectDialog"; */
+ 
 
 
 function NavBar() {
   const location = useLocation();  
-  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
-
-  function handleLogoutDialogOpen() {
-    setLogoutDialogOpen(true);
-  }
-
-  function handleLogoutDialogClose() {
-    setLogoutDialogOpen(false);
-  }
 
   function logout() {
   localStorage.removeItem("token");
+  window.location.reload();
   }
 
   const getIconColor = (path) => {
     return location.pathname === path ?  "secondary.light"
-    :"secondary.main"; // 'primary' est la couleur lorsque l'icône est active, 'action' quand elle ne l'est pas
+    :"secondary.main";
   };
 
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import {
   Box,
   Grid,
@@ -15,7 +15,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { t, use } from "i18next";
 
 import ImageIcon from "@mui/icons-material/Image";
 import AddIcon from "@mui/icons-material/Add";
@@ -173,14 +172,6 @@ function SlideshowConfig(props) {
               </Typography>
             </Box>
             <Box className="headerRight">
-              {/*  <IconButton
-                className="headerButton"
-                onClick={() => {
-                  document.getElementById("inputFile").click();
-                }}
-              >
-                <AddIcon sx={{ color: "secondary.main" }} />
-              </IconButton> */}
               <IconButton
                 aria-controls={open ? "basic-menu" : undefined}
                 aria-haspopup="true"
@@ -278,7 +269,7 @@ function SlideshowConfig(props) {
                             onChange={(e) => handleDurationChange(e, media._id)}
                             size="small"
                             type="number"
-                            disabled={media.type.split("/")[0] == "video"}
+                            disabled={media.type.split("/")[0] === "video"}
                             inputProps={{ min: 0, max: 999 }}
                             style={{ width: "90px" }}
                           />

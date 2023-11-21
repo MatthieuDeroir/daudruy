@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
 import {
   Box,
   Button,
@@ -14,13 +13,12 @@ import LoginIcon from "@mui/icons-material/Login";
 import { userService } from "../../services/UserServices";
 
 function Login() {
-  const { t } = useTranslation();
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
 
   async function handleSubmit(e) {
     if (e) e.preventDefault();
-    const username = "Test";
+    const username = "User";
     try {
       const user = await userService.signing(username, password);
 
@@ -32,7 +30,7 @@ function Login() {
     } catch (error) {
       console.error("Erreur lors de la connexion:", error);
 
-      setError(t("loginErrorMessage"));
+      setError("Mot de passe incorrect");
     }
   }
 
@@ -53,7 +51,7 @@ function Login() {
               variant="h6"
               sx={{ color: "primary.light" }}
             >
-              {t("loginTitle")}
+              Connexion 
             </Typography>
           </Box>
         </Box>
@@ -62,7 +60,7 @@ function Login() {
           <form onSubmit={handleSubmit}>
             <FormControl sx={{ width: "35vh" }}>
               <TextField
-                label={t("passwordLabel")}
+                label="Mot de passe"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -80,7 +78,7 @@ function Login() {
                 {error || " "}
               </Typography>
               <Button type="submit" sx={{ color: "secondary.main" }}>
-                {t("loginButton")}
+                Se connecter
               </Button>
             </FormControl>
           </form>

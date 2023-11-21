@@ -11,7 +11,6 @@ import {
 import EditCalendarIcon from "@mui/icons-material/EditCalendar";
 import SaveIcon from "@mui/icons-material/Save";
 import React, { useEffect, useState } from "react";
-import { t } from "i18next";
 import { camionService } from "../../../services/CamionServices";
 
 function CamionPanel() {
@@ -106,7 +105,7 @@ function CamionPanel() {
               sx={{ color: "text.primary" }}
               className="headerTitle"
             >
-              {t("controlPanel")}
+              Panneau de contrôle des camions
             </Typography>
           </Box>
           <Box className="headerRight">
