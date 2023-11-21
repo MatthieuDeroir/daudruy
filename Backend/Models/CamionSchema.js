@@ -6,7 +6,6 @@ const CamionSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
-        maxlength: 8
     },
     action: {
         type: String,
@@ -16,7 +15,7 @@ const CamionSchema = new mongoose.Schema({
     destination: {
         type:String,
         required: true,
-        enum: ['accueil', 'balance']
+        enum: ['Accueil', 'Balance']
     },
     date_appel: {
         type: Date,

@@ -6,6 +6,6 @@ const camionsController = require('../Controllers/CamionController');
 router.post('/', camionsController.addCamion);
 router.get('/', camionsController.getCamions);
 router.delete('/:id', camionsController.deleteCamion);
-router.post('/update', camionsController.updateCamions);
+router.put('/', camionsController.updateCamions);
 
 module.exports = router;

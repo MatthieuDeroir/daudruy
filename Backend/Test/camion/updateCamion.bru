@@ -1,0 +1,41 @@
+meta {
+  name: updateCamion
+  type: http
+  seq: 2
+}
+
+put {
+  url: http://localhost:4000/api/camion
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  [
+    {
+      "_id": "6552430c14715b48309eba10",
+      "immatriculation": "00000000",
+      "action": "wait",
+      "destination": "Balance",
+      "date_appel": "2023-11-13T15:38:52.445"
+    },
+    {
+      "_id": "6552430c14715b48309eba0d",
+      "immatriculation": "00000000",
+      "action": "wait",
+      "destination": "Balance",
+      "date_appel": "2023-11-13T15:38:52.440Z"
+    },
+    {
+      "_id": "6552430c14715b48309eba0b",
+      "immatriculation": "00000000",
+      "action": "wait",
+      "destination": "Balance",
+      "date_appel": "2023-11-13T15:38:52.428Z"
+    }
+  ]
+}

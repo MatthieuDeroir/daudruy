@@ -1,5 +1,28 @@
 const Camion = require('../Models/CamionSchema');
 
+exports.initializeCamions = async () => {
+    try {
+        const camions = await Camion.find();
+        const nombreCamionsInitiaux = 3;
+
+        if (camions.length < nombreCamionsInitiaux) {
+            const camionsRestants = nombreCamionsInitiaux - camions.length;
+
+            for (let i = 0; i < camionsRestants; i++) {
+                const camion = new Camion({
+                    immatriculation: '00000000',
+                    action: 'wait',
+                    destination: 'Balance',
+                    date_appel: new Date()
+                });
+                await camion.save();
+            }
+        }
+    } catch (error) {
+        console.error('Erreur lors de l\'initialisation des documents camion :', error);
+    }
+}
+
 exports.addCamion = async (req, res) => {
     try {
         console.log("CamionController.addCamion: req.body:", req.body);
@@ -34,9 +57,12 @@ exports.deleteCamion = async (req, res) => {
 exports.updateCamions = async (req, res) => {
     try {
         await Camion.deleteMany({});
-        const camions = await Camion.insertMany(req.body);
+
+        // ajoute date_appel: new Date() à chaque camion
+         const camions = await Camion.insertMany(req.body.map(camion => ({...camion, date_appel: new Date()})));
         res.status(201).send(camions);
     } catch (error) {
+        console.log(error);
         res.status(400).send(error.message);
     }
 };

@@ -1,100 +1,114 @@
-import './App.css';
-import TruckList from "./Components/TruckList";
-import MediaDisplay from "./Components/MediaDisplay";
-import {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
+import { camionService } from "./services/CamionService";
+import { slideshowService } from "./services/SlideshowService";
+import { veilleService } from "./services/VeilleService";
+import _ from "lodash";
+import CamionPage from "./pages/CamionPage";
+import MediasPage from "./pages/MediasPage";
+import { slideshowStatutsService } from "./services/SlideshowStatutsService";
+import "./Global.css";
+import TestPage from "./pages/TestPage";
+
 function App() {
-    const [showTrucks, setShowTrucks] = useState(true);
-    const [mediaIndex, setMediaIndex] = useState(0);
-    const [medias, setMedias] = useState([]);
-    const [totalTruckPages, setTotalTruckPages] = useState(1);
-    const [currentTruckPage, setCurrentTruckPage] = useState(0);
-    const [fetchedTrucks, setFetchedTrucks] = useState([]);
-    const [settings, setSettings] = useState([]);
-    const [debutVeille, setDebutVeille] = useState(0);
-    const [finVeille, setFinVeille] = useState(0);
-    const [dureeDefilement, setDureeDefilement] = useState(30);
+  const [camionsData, setCamionsData] = useState([]);
+  const [isVeilleMode, setIsVeilleMode] = useState(false);
+  const [isTesting, setIsTesting] = useState(false);
+  const [currentSlideshow, setCurrentSlideshow] = useState({});
+  const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
 
-    const fetchSettings = async () => {
-        try {
-            const response = await fetch('http://localhost:4000/settings');
-            const data = await response.json();
-            setSettings(data);
-            setDebutVeille(settings.debutVeille);
-            setFinVeille(settings.finVeille);
-            setDureeDefilement(settings.dureeDefilement);
-            console.log("App.fetchSettings: data:", data);
-        } catch (error) {
-            console.error('Error fetching settings:', error);
+  useEffect(() => {
+    const fetchData = async () => {
+      const [veilleRes, camionsRes, slideshowRes, slideshowStatusRes] =
+        await Promise.all([
+          veilleService.getVeille(),
+          camionService.getCamions(),
+          slideshowService.getSlideshow(),
+          slideshowStatutsService.getSlideshowStatus(),
+        ]);
+
+      setIsVeilleMode(checkIsInVeillePeriod(veilleRes[0]));
+      setCamionsData(camionsRes);
+      const currentSlideshowId = slideshowStatusRes[0]?.slideshowId;
+      if (slideshowStatusRes[0]?.isRunning) {
+        const foundSlideshow = slideshowRes.data.slideshows.find(
+          (slideshow) => slideshow._id === currentSlideshowId
+        );
+    
+
+        // Vérifie si le diaporama actuel est le même que le précédent
+        if (!_.isEqual(currentSlideshow, foundSlideshow)) {
+          setCurrentSlideshow(foundSlideshow);
+          setCurrentMediaIndex(0);
         }
-
-    }
-
-    const fetchTrucks = async () => {
-        try {
-            const response = await fetch('http://localhost:4000/camions');
-            const data = await response.json();
-            setFetchedTrucks(data);
-            console.log("App.fetchTrucks: data:", data);
-            const totalPages = Math.ceil(data.length / 10);
-        } catch (error) {
-            console.error('Error fetching trucks:', error);
-        }
+      } else if (!_.isEmpty(currentSlideshow)) {
+        // Si le diaporama n'est plus en cours, réinitialise currentSlideshow
+        setCurrentSlideshow({});
+      }
+      if (slideshowStatusRes[0]?.isTesting) {
+        setIsTesting(true);
+      }else{
+        setIsTesting(false);
+      }
     };
+    fetchData();
+    const interval = setInterval(fetchData, 5000);
+    return () => clearInterval(interval);
+  }, [currentSlideshow]);
 
-    const handleMediaEnd = () => {
-        setMediaIndex((prevIndex) => {
-            const nextIndex = (prevIndex + 1) % medias.length;
-            if (nextIndex === 0) {
-                setShowTrucks(true); // Retourner à l'affichage des camions
-                setCurrentTruckPage(0);
-                fetchTrucks(); // Refetch les camions
-            }
-            return nextIndex;
-        });
-    };
+  useEffect(() => {
 
-    const fetchMedias = async () => {
-        try {
-            const response = await fetch('http://localhost:4000/media-management/');
-            const data = await response.json();
-            setMedias(data);
-            console.log("App.fetchMedias: data:", data);
-        } catch (error) {
-            console.error('Error fetching medias:', error);
-        }
-    };
-
-    useEffect(() => {
-        fetchTrucks(); // Fetch initial des camions
-        fetchMedias(); // Fetch initial des médias
-    }, []);
-
-    useEffect(() => {
-        const intervalId = setInterval(() => {
-            if (showTrucks) {
-                setCurrentTruckPage((prevPage) => {
-                    const nextPage = (prevPage + 1) % totalTruckPages;
-                    if (nextPage === 0 && medias.length > 0) {
-                        setShowTrucks(false);
-                        setMediaIndex(0);
-                        fetchMedias();
-                    }
-                    return nextPage;
-                });
-            } else {
-                handleMediaEnd(); // Utilisez votre fonction handleMediaEnd ici
-            }
-        }, 10000);
-
-        return () => clearInterval(intervalId);
-    }, [showTrucks, mediaIndex, medias.length, totalTruckPages]);
-
-    return (
-        <div className="App">
-            {showTrucks ? <TruckList setCurrentPage={setCurrentTruckPage} setTotalPages={setTotalTruckPages} currentPage={currentTruckPage} fetchedTrucks={fetchedTrucks}/> :
-                <MediaDisplay media={medias[mediaIndex] || null} onMediaEnd={handleMediaEnd}/>}
-        </div>
+    const mediaInterval = setInterval(
+      () => {
+        setCurrentMediaIndex(
+          (prevIndex) => (prevIndex + 1) % (currentSlideshow.media?.length || 1)
+        );
+      },
+      currentSlideshow.media && currentSlideshow.media.length > 0
+        ? currentSlideshow.media[currentMediaIndex]?.duration * 1000
+        : 5000
     );
+
+    return () => clearInterval(mediaInterval);
+  }, [currentSlideshow, currentMediaIndex]);
+
+  const checkIsInVeillePeriod = (veilleData) => {
+    if (!veilleData.enable) {
+      return false;
+    }
+    const currentHour = new Date().getHours();
+    const startHour = parseInt(veilleData.start.split(":")[0], 10);
+    const stopHour = parseInt(veilleData.stop.split(":")[0], 10);
+
+    return currentHour >= startHour && stopHour <= currentHour;
+  };
+
+  return (
+    <div>
+      {isTesting? (<TestPage/>):(isVeilleMode ? (
+        <p>Vous êtes actuellement dans la période de veille.</p>
+      ) : currentSlideshow.media && currentSlideshow.media.length > 0 ? (
+        currentSlideshow.media.map((media, index) => (
+          <div
+            key={media._id}
+            style={{
+              maxHeight: "240px",
+              display: index === currentMediaIndex ? "block" : "none",
+              maxWidth: "480px"
+             
+            }}
+          >
+            {media.type === "Panneau" ? (
+              <CamionPage camionsData={camionsData} />
+            ) : (
+              <MediasPage media={media} />
+            )}
+          </div>
+        ))
+      ) : (
+        <CamionPage camionsData={camionsData} />
+      ))}
+    </div>
+  );
 }
 
 export default App;
