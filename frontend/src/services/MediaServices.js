@@ -1,5 +1,5 @@
-import config from "../config/config.json";
-const API_URL = config.API_URL;
+const API_URL = process.env.REACT_APP_API_URL;
+
 const TOKEN = JSON.parse(localStorage.getItem('token')); // Récupère le token du localStorage et enlève les guillemets
 
 export const mediaService = {

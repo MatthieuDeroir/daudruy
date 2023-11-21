@@ -1,7 +1,6 @@
-import config from "../config/config.json";
 import { api } from "../helpers/api"; // Assurez-vous que le chemin d'importation est correct.
 
-const API_URL = config.API_URL;
+const API_URL = process.env.REACT_APP_API_URL;
 
 export const userService = {
   signing,

@@ -66,11 +66,9 @@ function SlideshowConfig(props) {
         await mediaService
           .uploadMedia(event.target.files[0], id)
           .then((data) => {
-            console.log("Uploaded data", data);
             var newMedia = data;
             newMedia.type = "image";
             const updatedMediaList = [...props.slideshow.media, newMedia];
-            console.log("updatedMediaList", updatedMediaList);
             props.setSlideshow({
               ...props.slideshow,
               media: updatedMediaList,

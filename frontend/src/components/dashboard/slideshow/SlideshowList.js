@@ -142,8 +142,8 @@ function SlideshowList(props) {
                             <CircularProgress
                               size={15}
                               sx={{
-                                top: -0.5,
-                                left: -0.5,
+                                top: -0.1,
+                                left: -0.4,
                                 position: "absolute",
                                 color: "secondary.main",
                               }}

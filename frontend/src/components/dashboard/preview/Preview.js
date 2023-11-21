@@ -28,11 +28,11 @@ function Preview() {
               paddingRight: { xs: 2, sm: 6 },
             }}
           >
-            <iframe
+           {/*  <iframe
               src="http://localhost:3001"
               title="Preview"
               style={{ border: "none", height: "240px", width: "480px" }}
-            ></iframe>
+            ></iframe> */}
           </Box>
         </Paper>
       </Grid>

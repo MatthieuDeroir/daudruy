@@ -22,6 +22,8 @@ function App() {
   const { themeMode } = useThemeMode();
 
   useEffect(() => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    console.log("test01",API_URL);
     setToken(localStorage.getItem("token"));
   }, [token]);
 

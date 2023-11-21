@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import CamionPanel from "./camionPanel/CamionPanel";
 import Preview from "./preview/Preview";
 import SlideshowList from "./slideshow/SlideshowList";
-import { use } from "i18next";
 import SlideshowConfig from "./slideshow/SlideshowConfig";
 import { slideshowService } from "../../services/SlideshowService";
 
