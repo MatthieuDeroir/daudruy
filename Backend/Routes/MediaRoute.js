@@ -1,6 +1,6 @@
 
 const uploadController = require('../Controllers/MediaController');
-const authMiddleware = require("../Middlewares/authMiddleware");
+const authMiddleware = require("../Middlewares/AuthMiddleware");
 const upload = require('../Middlewares/UploadMiddleware');
 
 const express = require('express');

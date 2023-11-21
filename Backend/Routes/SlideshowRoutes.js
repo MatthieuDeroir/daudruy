@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const slideshowController = require("../Controllers/slideshowController");
-const authMiddleware = require("../Middlewares/authMiddleware");
+const slideshowController = require("../Controllers/SlideshowController");
+const authMiddleware = require("../Middlewares/AuthMiddleware");
 
 // Route pour obtenir tous les slideshows
 router
