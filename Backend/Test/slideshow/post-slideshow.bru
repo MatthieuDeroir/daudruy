@@ -1,0 +1,21 @@
+meta {
+  name: post-slideshow
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:4000/api/slideshow
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "dsqdsqdq"
+  }
+}

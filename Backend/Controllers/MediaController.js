@@ -1,87 +1,119 @@
-const Media = require('../Models/MediaSchema');
-const fs = require('fs');
-const path = require('path');
-const ffmpeg = require('fluent-ffmpeg');
-const mime = require('mime');
+const fs = require("fs");
+const crypto = require("crypto");
+const path = require("path");
+const ffmpeg = require("fluent-ffmpeg");
 
-exports.uploadMedia = async (req, res) => {
-    try {
-        // Supposons que vous ayez le fichier dans req.file.path
-        const filePath = req.file.path;
-        const mimeType = mime.getType(filePath);
-        let type;
-        let duration = 0;
+const Media = require("../Models/MediaModel");
+const Slideshow = require("../Models/SlideshowModel");
 
-        if (mimeType.startsWith('image')) {
-            type = 'image';
-        } else if (mimeType.startsWith('video')) {
-            type = 'video';
-        } else {
-            fs.unlinkSync(filePath); // Supprimer le fichier s'il n'est pas du bon type
-            return res.status(400).send('Invalid media type. Only images and videos are allowed.');
-        }
+exports.uploadFile = async (req, res) => {
+  const slideshowId = req.body.slideshowId;
+  const originalFilename = req.file.originalname;
+  const uniqueValue = Math.random().toString();
+  const hashedFilename = crypto
+    .createHash("sha256")
+    .update(originalFilename + uniqueValue)
+    .digest("hex");
+  const format = req.file.mimetype.split("/")[1];
+  const newpath = path.join(__dirname, "../../frontend/build/media/");
+  const oldPath = req.file.path;
+  const type = req.file.mimetype;
+  const newPathWithFileName = path.join(newpath, `${hashedFilename}.${format}`);
 
-        if (type === 'video') {
-            await new Promise((resolve, reject) => {
-                ffmpeg.ffprobe(filePath, (err, metadata) => {
-                    if (err) return reject(err);
-                    duration = Math.floor(metadata.format.duration);
-                    resolve();
-                });
+  fs.rename(oldPath, newPathWithFileName, async (err) => {
+    if (err) {
+      console.log(err);
+      return res
+        .status(500)
+        .send({ message: "Le téléchargement du fichier a échoué", code: 500 });
+    }
+
+    // Si le fichier est une vidéo, obtenez sa durée.
+    if (type.startsWith("video/")) {
+      ffmpeg.ffprobe(newPathWithFileName, async function (err, metadata) {
+        if (err) {
+          console.error(err);
+          return res
+            .status(500)
+            .send({
+              message: "Échec lors de la récupération de la durée de la vidéo",
+              code: 500,
             });
         }
-        else {
-            duration = 30;
-        }
 
-        // Créer une nouvelle instance de Media avec le type, la durée, et le chemin
+        const videoDuration = metadata.format.duration;
+
         const media = new Media({
-            type,
-            duration,
-            path: filePath, // ou un autre chemin basé sur votre logique de stockage
+          originalFilename: originalFilename,
+          hashedFilename: hashedFilename,
+          user: req.body.user,
+          format: format,
+          path: `/media/${hashedFilename}.${format}`,
+          duration: videoDuration,
+          type: type,
         });
 
-        await media.save();
-        res.status(201).send(media);
+        try {
+          await saveMediaAndUpdateSlideshow(media, slideshowId, res);
+        } catch (error) {
+          handleError(error, res);
+        }
+      });
+    } else {
+      // Pour les images et autres types de fichiers, mettez une durée par défaut ou gérez comme nécessaire.
+      const media = new Media({
+        originalFilename: originalFilename,
+        hashedFilename: hashedFilename,
+        user: req.body.user,
+        format: format,
+        path: `/media/${hashedFilename}.${format}`,
+        duration: 10,
+        type: type,
+      });
 
-    } catch (error) {
-        console.error('Error uploading media:', error);
-        res.status(500).send('Error uploading media.');
+      try {
+        await saveMediaAndUpdateSlideshow(media, slideshowId, res);
+      } catch (error) {
+        handleError(error, res);
+      }
     }
+  });
 };
 
+async function saveMediaAndUpdateSlideshow(media, slideshowId, res) {
+  await Slideshow.findByIdAndUpdate(
+    slideshowId,
+    { $push: { media: media } },
+    { new: true, useFindAndModify: false }
+  );
 
-exports.getAllMedia = async (req, res) => {
-    try {
-        const media = await Media.find();
-        res.status(200).send(media);
-    } catch (error) {
-        res.status(500).send(error.message);
-    }
-};
+  res.status(200).json(media);
+}
 
-exports.deleteMedia = async (req, res) => {
-    try {
-        const media = await Media.findById(req.params.id);
-        if (!media) return res.status(404).send('Media not found');
+function handleError(error, res) {
+  console.log(error);
+  res.status(500).send({
+    message: "Erreur lors de l'ajout du média au slideshow",
+    code: 500,
+  });
+}
 
-        // Suppression du fichier
-        fs.unlinkSync(path.join(__dirname, '..', 'media', media.path));
+exports.deleteFile = (req, res) => {
+  const directoryPath = path.join(
+    __dirname,
+    "../../panneau_couchet/build/media/"
+  );
+  const fileName = req.body.fileName;
+  const format = req.body.format;
 
-        // Suppression de l'entrée dans la base de données
-        await media.remove();
-        res.status(200).send(media);
-    } catch (error) {
-        res.status(500).send(error.message);
-    }
-};
-
-exports.updateMedia = async (req, res) => {
-    try {
-        const media = await Media.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        if (!media) return res.status(404).send('Media not found');
-        res.status(200).send(media);
-    } catch (error) {
-        res.status(500).send(error.message);
-    }
+  if (req.body.fileName != "file") {
+    fs.unlink(`${directoryPath}${fileName}.${format}`, (err) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send({ message: "File deletion failed", code: 500 });
+      } else {
+        res.status(200).send({ message: "File deleted", code: 200 });
+      }
+    });
+  }
 };
