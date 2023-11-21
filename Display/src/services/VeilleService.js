@@ -1,5 +1,5 @@
-import config from "../config/config.json";
-const API_URL = config.API_URL;
+
+const API_URL = process.env.REACT_APP_API_URL;
 
 export const veilleService = {
   getVeille,
