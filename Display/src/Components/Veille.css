@@ -1,0 +1,8 @@
+.veille-container {
+    background-color: black;
+    width: 100vw; /* Viewport Width */
+    height: 100vh; /* Viewport Height */
+    position: fixed; /* Fixed position */
+    top: 0;
+    left: 0;
+}
