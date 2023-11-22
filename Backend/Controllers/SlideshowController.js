@@ -70,7 +70,10 @@ exports.createSlideshow = async (req, res) => {
 exports.getSlideshow = async (req, res) => {
     try {
         const slideshow = await Slideshow.findByPk(req.params.id, {
-            include: [Media]
+            include: {
+                model: Media,
+                as: 'media'
+            }
         });
         if (!slideshow) {
             return res.status(404).json({
@@ -163,7 +166,10 @@ exports.updateMediaOrder = async (req, res) => {
     try {
         // Récupérez le slideshow actuel et les médias associés
         const slideshow = await Slideshow.findByPk(slideshowId, {
-            include: [Media]
+            include: {
+                model: Media,
+                as: 'media'
+            }
         });
 
         if (!slideshow) {
