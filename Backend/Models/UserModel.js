@@ -1,25 +1,24 @@
-const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../Database/Sequelize');
 
-const userSchema = new mongoose.Schema({
+const User = sequelize.define('User', {
     username: {
-        type: String,
-        required: true,
+        type: DataTypes.STRING,
+        allowNull: false,
         unique: true
     },
     password: {
-        type: String,
-        required: true
+        type: DataTypes.STRING,
+        allowNull: false
     }
 });
 
-userSchema.pre('save', async function (next) {
-    if (this.isModified('password')) {
-        this.password = await bcrypt.hash(this.password, 12);
+// Hook pour hasher le mot de passe (similaire à `pre('save')` dans Mongoose)
+User.beforeCreate(async (user, options) => {
+    if (user.password) {
+        user.password = await bcrypt.hash(user.password, 12);
     }
-    next();
 });
-
-const User = mongoose.model('User', userSchema);
 
 module.exports = User;
