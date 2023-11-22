@@ -21,6 +21,7 @@ exports.signin = async (req, res) => {
     });
 
     res.status(200).json({ token });
+    console.log("token", token)
   } catch (error) {
     console.log("error", error);
     res.status(500).json({ message: error.message });

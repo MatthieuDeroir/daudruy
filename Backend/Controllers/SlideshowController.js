@@ -4,7 +4,10 @@ const {Media, Slideshow} = require("../Models");
 exports.getAllSlideshows = async (req, res) => {
     try {
         const slideshows = await Slideshow.findAll({
-            include: [Media] // Si vous voulez inclure les médias associés
+            include: [{
+                model: Media,
+                as: 'medias'
+            }]
         });
         res.status(200).json({
             status: "success",
@@ -100,31 +103,34 @@ exports.addSlideshow = async (req, res) => {
 };
 
 exports.deleteSlideshow = async (req, res) => {
+
     const slideshowId = req.params.id;
 
     try {
         // Supprimer les fichiers médias associés, si nécessaire
         const slideshow = await Slideshow.findByPk(slideshowId, {
-            include: [Media]
+            include: {
+                model: Media,
+                as: 'medias'
+            }
         });
 
-        for (const media of slideshow.Medias) {
-            await media.destroy();
-        }
-
         await Slideshow.destroy({
-            where: {id: slideshowId}
+            where: {id: slideshow.id}
         });
 
         res.status(204).json({
             status: "success",
             data: null,
+            message: "Slideshow supprimé avec succès"
         });
     } catch (err) {
         res.status(500).json({
             status: "fail",
             message: err.message || "Une erreur est survenue lors de la suppression du slideshow",
+            log: err
         });
+        console.log(err);
     }
 };
 
