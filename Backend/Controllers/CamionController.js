@@ -2,41 +2,42 @@ const Camion = require('../Models/CamionModel');
 
 exports.initializeCamions = async () => {
     try {
-        const camions = await Camion.find();
         const nombreCamionsInitiaux = 3;
+        const count = await Camion.count();
 
-        if (camions.length < nombreCamionsInitiaux) {
-            const camionsRestants = nombreCamionsInitiaux - camions.length;
+        if (count < nombreCamionsInitiaux) {
+            const camionsRestants = nombreCamionsInitiaux - count;
 
             for (let i = 0; i < camionsRestants; i++) {
-                const camion = new Camion({
+                await Camion.create({
                     immatriculation: '00000000',
                     action: 'wait',
                     destination: 'Balance',
                     date_appel: new Date()
                 });
-                await camion.save();
             }
         }
     } catch (error) {
-        console.error('Erreur lors de l\'initialisation des documents camion :', error);
+        console.error('Erreur lors de l\'initialisation des camions :', error);
     }
 }
 
+
 exports.addCamion = async (req, res) => {
     try {
-        console.log("CamionController.addCamion: req.body:", req.body);
-        const camion = new Camion(req.body);
-        await camion.save();
+        const camion = await Camion.create(req.body);
         res.status(201).send(camion);
     } catch (error) {
         res.status(400).send(error.message);
     }
 };
 
+
 exports.getCamions = async (req, res) => {
     try {
-        const camions = await Camion.find().sort({ date_appel: -1 }); // -1 pour un tri en ordre décroissant
+        const camions = await Camion.findAll({
+            order: [['date_appel', 'DESC']] // Tri en ordre décroissant
+        });
         res.status(200).send(camions);
     } catch (error) {
         res.status(500).send(error.message);
@@ -46,23 +47,39 @@ exports.getCamions = async (req, res) => {
 
 exports.deleteCamion = async (req, res) => {
     try {
-        const camion = await Camion.findByIdAndDelete(req.params.id);
-        if (!camion) return res.status(404).send('Camion not found');
-        res.status(200).send(camion);
+        const id = req.params.id;
+        const camion = await Camion.destroy({
+            where: {id}
+        });
+
+        if (!camion) {
+            return res.status(404).send('Camion not found');
+        }
+
+        res.status(200).send({message: 'Camion deleted successfully'});
     } catch (error) {
         res.status(500).send(error.message);
     }
 };
 
+
 exports.updateCamions = async (req, res) => {
     try {
-        await Camion.deleteMany({});
+        await Camion.destroy({
+            where: {},
+            truncate: true // Cette option supprime tous les enregistrements de la table
+        });
 
-        // ajoute date_appel: new Date() à chaque camion
-         const camions = await Camion.insertMany(req.body.map(camion => ({...camion, date_appel: new Date()})));
-        res.status(201).send(camions);
+        const updatedCamions = await Camion.bulkCreate(
+            req.body.map(camion => ({
+                ...camion,
+                date_appel: new Date()
+            }))
+        );
+
+        res.status(201).send(updatedCamions);
     } catch (error) {
-        console.log(error);
         res.status(400).send(error.message);
     }
 };
+

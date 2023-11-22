@@ -3,7 +3,7 @@ const Media = require('./MediaRoutes');
 const Slideshow = require('./SlideshowRoutes');
 const SlideshowStatus = require('./SlideshowStatusRoutes');
 const User = require('./UserRoutes');
-const Veille = require('./VeilleRoutes');
+const Settings = require('./SettingsRoutes');
 
 module.exports = {
     Camion,
@@ -11,5 +11,5 @@ module.exports = {
     Slideshow,
     SlideshowStatus,
     User,
-    Veille
+    Settings
 }

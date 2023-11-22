@@ -1,11 +1,15 @@
 const {initializeCamions} = require('../Controllers/CamionController');
-const {initializeVeille} = require('../Controllers/VeilleController');
+const {initializeSettings} = require('../Controllers/SettingsController');
 const {initializeSlideshowStatus} = require('../Controllers/SlideshowStatusController');
 
-try {
-    initializeCamions();
-    initializeVeille();
-    initializeSlideshowStatus();
-} catch (error) {
-    console.error('Error while initializing', error);
+function initialize() {
+    try {
+        initializeCamions();
+        initializeSettings();
+        initializeSlideshowStatus();
+    } catch (error) {
+        console.error('Error while initializing', error);
+    }
 }
+
+module.exports = initialize;

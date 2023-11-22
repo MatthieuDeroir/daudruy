@@ -5,7 +5,7 @@ const Media = require('./MediaModel');
 const Slideshow = require('./SlideshowModel');
 const SlideshowStatus = require('./SlideshowStatusModel');
 const User = require('./UserModel');
-const Veille = require('./VeilleModel');
+const Settings = require('./SettingsModel');
 
 Media.belongsTo(Slideshow);
 Slideshow.hasMany(Media, {as: 'medias'});
@@ -16,5 +16,5 @@ module.exports = {
     Slideshow,
     SlideshowStatus,
     User,
-    Veille
+    Settings
 };

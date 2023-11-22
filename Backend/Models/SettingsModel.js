@@ -1,7 +1,7 @@
 const {DataTypes} = require('sequelize');
 const sequelize = require('../Database/Sequelize');
 
-const Veille = sequelize.define('Veille', {
+const Settings = sequelize.define('Settings', {
     enable: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
@@ -10,4 +10,4 @@ const Veille = sequelize.define('Veille', {
     start: DataTypes.STRING
 });
 
-module.exports = Veille;
+module.exports = Settings;
