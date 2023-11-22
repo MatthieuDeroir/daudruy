@@ -85,7 +85,7 @@ function App() {
   return (
     <div>
       {isTesting? (<TestPage/>):(isVeilleMode ? (
-        <p>Vous êtes actuellement dans la période de veille.</p>
+       <></>
       ) : currentSlideshow.media && currentSlideshow.media.length > 0 ? (
         currentSlideshow.media.map((media, index) => (
           <div

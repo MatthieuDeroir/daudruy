@@ -7,6 +7,7 @@ const Media = require("../Models/MediaModel");
 const Slideshow = require("../Models/SlideshowModel");
 
 exports.uploadFile = async (req, res) => {
+  console.log("test",req.file);
   const slideshowId = req.body.slideshowId;
   const originalFilename = req.file.originalname;
   const uniqueValue = Math.random().toString();
@@ -15,7 +16,7 @@ exports.uploadFile = async (req, res) => {
     .update(originalFilename + uniqueValue)
     .digest("hex");
   const format = req.file.mimetype.split("/")[1];
-  const newpath = path.join(__dirname, "../../frontend/build/media/");
+  const newpath = path.join(__dirname, process.env.UPLOAD_PATH);
   const oldPath = req.file.path;
   const type = req.file.mimetype;
   const newPathWithFileName = path.join(newpath, `${hashedFilename}.${format}`);
@@ -101,7 +102,7 @@ function handleError(error, res) {
 exports.deleteFile = (req, res) => {
   const directoryPath = path.join(
     __dirname,
-    "../../panneau_couchet/build/media/"
+    process.env.UPLOAD_PATH
   );
   const fileName = req.body.fileName;
   const format = req.body.format;

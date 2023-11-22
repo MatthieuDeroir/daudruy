@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const CamionSchema = new mongoose.Schema({
     immatriculation: {
         type: String,
-        required: true,
         trim: true,
     },
     action: {

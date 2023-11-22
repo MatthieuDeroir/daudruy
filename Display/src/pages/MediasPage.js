@@ -8,7 +8,7 @@ function MediasPage({ media }) {
     }
     else if (media.type.includes('video')) {
       return (
-        <video style={{width:"480px", height:"240px"}} controls>
+        <video style={{width:"480px", height:"240px"}} autoPlay muted>
           <source src={process.env.REACT_APP_MEDIA_DISPLAY_PATH + media.path} type={media.type} />
         </video>
       );
