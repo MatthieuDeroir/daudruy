@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const veilleController = require("../controllers/VeilleController");
+const veilleController = require("../Controllers/VeilleController");
 
-const authMiddleware = require("../Middlewares/authMiddleware");
+const authMiddleware = require("../Middlewares/AuthMiddleware");
 
 router
   .route("/get-veille")

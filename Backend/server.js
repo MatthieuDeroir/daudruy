@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cron = require('node-cron');
+const db = require('./Database/Database');
 const cors = require('cors');
 require('dotenv').config();
 

@@ -1,0 +1,33 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    font-family: "Arial Black", sans-serif;
+    font-size: calc(1920px * 0.010); /* Ajustez cette valeur pour changer la taille de la police en fonction de la largeur de l'écran */
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 0px;
+    background-color: black;
+    color: white;
+    height: 100vh;
+    box-sizing: border-box;
+    padding: 20px;
+    align-content: start; /* Aligner les lignes de grille au début du conteneur de grille */
+}
+
+
+.header {
+    color: orange;
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+}
+
+.item {
+    text-align: center;
+    padding: 10px;
+}
