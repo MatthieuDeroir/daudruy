@@ -7,4 +7,6 @@ const db = new sqlite3.Database('./Database/db.sqlite', sqlite3.OPEN_READWRITE |
     console.log('Connected to the SQLite Database.');
 });
 
+db.on('error', console.error.bind(console, 'connection error:'));
+
 module.exports = db;

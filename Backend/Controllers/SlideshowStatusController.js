@@ -1,4 +1,4 @@
-const SlideshowStatus = require('../Models/SlideshowStatutsModel');
+const SlideshowStatus = require('../Models/SlideshowStatusModel');
 const mongoose = require('mongoose');
 exports.initializeSlideshowStatus = async () => {
     try {

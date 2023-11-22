@@ -1,4 +1,4 @@
-const Camion = require('../Models/CamionSchema');
+const Camion = require('../Models/CamionModel');
 
 exports.initializeCamions = async () => {
     try {

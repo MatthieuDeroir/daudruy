@@ -1,41 +1,20 @@
-const mongoose = require("mongoose");
+const { DataTypes } = require('sequelize');
+const sequelize = require('../Database/Sequelize');
 
-const MediaSchema = new mongoose.Schema({
-  id: {
-    type: Number,
-  },
-  originalFilename: {
-    type: String,
-  },
-  hashedFilename: {
-    type: String,
-  },
-  user: {
-    type: String,
-  },
-  format: {
-    type: String,
-  },
+const Media = sequelize.define('Media', {
+  originalFilename: DataTypes.STRING,
+  hashedFilename: DataTypes.STRING,
+  user: DataTypes.STRING,
+  format: DataTypes.STRING,
   date: {
-    type: Date,
-    default: Date.now(),
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW
   },
-  path: {
-    type: String,
-  },
-  duration: {
-    type: Number,
-  },
-  order: {
-    type: Number,
-  },
-  type: {
-    type: String,
-  },
-
-  data: {},
+  path: DataTypes.STRING,
+  duration: DataTypes.INTEGER,
+  order: DataTypes.INTEGER,
+  type: DataTypes.STRING
+  // data: {}, // Sequelize ne supporte pas directement les champs de type objet non structuré. Vous devrez peut-être le gérer différemment ou le sérialiser en tant que JSON.
 });
 
-const Medias = mongoose.model("Medias", MediaSchema);
-
-module.exports = Medias;
+module.exports = Media;

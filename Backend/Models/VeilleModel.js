@@ -1,20 +1,13 @@
-const mongoose = require('mongoose');
+const {DataTypes} = require('sequelize');
+const sequelize = require('../Database/Sequelize');
 
-const VeilleSchema = new mongoose.Schema({
-  enable: {
-    type: Boolean,
-    default: false,
-  },
-  stop: {
-    type: String,
-  },
-  start: {
-    type: String,
-  },
+const Veille = sequelize.define('Veille', {
+    enable: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+    },
+    stop: DataTypes.STRING,
+    start: DataTypes.STRING
 });
-
-
-
-const Veille = mongoose.model('Veille', VeilleSchema);
 
 module.exports = Veille;
