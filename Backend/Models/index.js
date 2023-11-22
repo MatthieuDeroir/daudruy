@@ -8,7 +8,7 @@ const User = require('./UserModel');
 const Settings = require('./SettingsModel');
 
 Media.belongsTo(Slideshow);
-Slideshow.hasMany(Media, {as: 'medias'});
+Slideshow.hasMany(Media, {as: 'media'});
 
 module.exports = {
     Camion,

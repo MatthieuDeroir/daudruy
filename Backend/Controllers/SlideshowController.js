@@ -6,7 +6,7 @@ exports.getAllSlideshows = async (req, res) => {
         const slideshows = await Slideshow.findAll({
             include: [{
                 model: Media,
-                as: 'medias'
+                as: 'media'
             }]
         });
         res.status(200).json({
@@ -111,7 +111,7 @@ exports.deleteSlideshow = async (req, res) => {
         const slideshow = await Slideshow.findByPk(slideshowId, {
             include: {
                 model: Media,
-                as: 'medias'
+                as: 'media'
             }
         });
 
