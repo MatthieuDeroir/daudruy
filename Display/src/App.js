@@ -31,7 +31,7 @@ function App() {
       const currentSlideshowId = slideshowStatusRes[0]?.slideshowId;
       if (slideshowStatusRes[0]?.isRunning) {
         const foundSlideshow = slideshowRes.data.slideshows.find(
-          (slideshow) => slideshow._id === currentSlideshowId
+          (slideshow) => slideshow.id === currentSlideshowId
         );
     
 
@@ -89,7 +89,7 @@ function App() {
       ) : currentSlideshow.media && currentSlideshow.media.length > 0 ? (
         currentSlideshow.media.map((media, index) => (
           <div
-            key={media._id}
+            key={media.id}
             style={{
               maxHeight: "240px",
               display: index === currentMediaIndex ? "block" : "none",

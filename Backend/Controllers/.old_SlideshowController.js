@@ -65,7 +65,7 @@ exports.updateMediaOrder = async (req, res) => {
 
   try {
     // Récupérez le slideshow actuel
-    const slideshow = await Slideshow.findOne({ _id: slideshowId });
+    const slideshow = await Slideshow.findOne({ id: slideshowId });
 
     if (!slideshow) {
       return res.status(404).json({
@@ -77,7 +77,7 @@ exports.updateMediaOrder = async (req, res) => {
     const orderedMediaArray = newOrder
       .map((orderItem) => {
         const mediaItem = slideshow.media.find(
-          (media) => media._id.toString() === orderItem.mediaId
+          (media) => media.id.toString() === orderItem.mediaId
         );
 
         return mediaItem
@@ -282,7 +282,7 @@ exports.deleteMediaFromSlideshow = async (req, res) => {
           }
         }
         try {
-          slideshow.media.pull({ _id: req.params.mediaId });
+          slideshow.media.pull({ id: req.params.mediaId });
           await slideshow.save();
           res.status(204).json({
             status: "success",
