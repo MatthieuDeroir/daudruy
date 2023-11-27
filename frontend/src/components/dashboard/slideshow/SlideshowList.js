@@ -55,7 +55,7 @@ function SlideshowList(props) {
     setSlideshowToPlay(data);
     await slideshowService.deleteSlideshow(eventToDelete).then((data) => {
       props.setSlideshows(
-        props.slideshows.filter((slideshow) => slideshow._id !== eventToDelete)
+        props.slideshows.filter((slideshow) => slideshow.id !== eventToDelete)
       );
       closeDialog();
       setSlideshowToDelete({});
@@ -68,13 +68,13 @@ function SlideshowList(props) {
   }
 
   function playSlideshow(slideshow) {
-    const data = { slideshowId: slideshow._id, isRunning: true };
+    const data = { slideshowId: slideshow.id, isRunning: true , isTesting: false};
     slideshowStatutsService.updateSlideshowStatus(data);
     setSlideshowToPlay(data);
   }
   function stopSlideshow(slideshow) {
     const data = {
-      slideshowId: slideshow._id,
+      slideshowId: slideshow.id,
       isRunning: false,
       isTesting: false,
     };
@@ -113,7 +113,7 @@ function SlideshowList(props) {
           {props.slideshows ? (
             <Box className="containerPage">
               {props.slideshows.map((slideshow) => (
-                <Table size="big" key={slideshow._id}>
+                <Table size="big" key={slideshow.id}>
                   <TableBody>
                     <TableRow hover>
                       <TableCell
@@ -125,7 +125,7 @@ function SlideshowList(props) {
                         {slideshow.name}
                       </TableCell>
 
-                      {slideshowToPlay.slideshowId === slideshow._id &&
+                      {slideshowToPlay.slideshowId === slideshow.id &&
                       slideshowToPlay.isRunning ? (
                         <TableCell sx={{ p: 0 }} align="right">
                           <IconButton

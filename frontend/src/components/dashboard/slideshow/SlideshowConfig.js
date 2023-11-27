@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Grid,
@@ -27,6 +27,11 @@ import { ReactSortable } from "react-sortablejs";
 function SlideshowConfig(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+
+  const sortedMedia = [...props.slideshow.media].sort(
+    (a, b) => a.order - b.order
+  );
+
   const handleOpenMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -40,58 +45,53 @@ function SlideshowConfig(props) {
 
   async function uploadMedia(event) {
     event.preventDefault();
-    if (event.target.files[0] !== undefined) {
-      if (event.target.files[0].type === "video/mp4") {
-        const id = props.slideshow._id;
-        await mediaService
-          .uploadMedia(event.target.files[0], id)
-          .then((data) => {
-            var newMedia = data;
-            newMedia.type = "video";
-            const updatedMediaList = [...props.slideshow.media, newMedia];
-            props.setSlideshow({
-              ...props.slideshow,
-              media: updatedMediaList,
-            });
-          })
-          .catch((error) => {
-            console.error("Upload error", error);
-          });
-      } else if (
-        event.target.files[0].type === "image/png" ||
-        event.target.files[0].type === "image/jpeg" ||
-        event.target.files[0].type === "image/jpg"
-      ) {
-        const id = props.slideshow._id;
-        await mediaService
-          .uploadMedia(event.target.files[0], id)
-          .then((data) => {
-            var newMedia = data;
-            newMedia.type = "image";
-            const updatedMediaList = [...props.slideshow.media, newMedia];
-            props.setSlideshow({
-              ...props.slideshow,
-              media: updatedMediaList,
-            });
-          })
-          .catch((error) => {
-            console.error("Upload error", error);
-          });
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const id = props.slideshow.id;
+    try {
+      const acceptedFormats = [
+        "video/mp4",
+        "image/png",
+        "image/jpeg",
+        "image/jpg",
+      ];
+      if (!acceptedFormats.includes(file.type)) {
+        throw new Error(
+          `Invalid file type ${file.type}. Only accept ${acceptedFormats.join(
+            ", "
+          )}`
+        );
       }
+
+      const mediaType = file.type.startsWith("image") ? "image" : "video";
+      const data = await mediaService.uploadMedia(file, id);
+
+      const newMedia = {
+        ...data.media,
+        type: mediaType,
+      };
+      const updatedMediaList = [...props.slideshow.media, newMedia];
+      console.log("updatedMediaList", updatedMediaList);
+      props.setSlideshow({
+        ...props.slideshow,
+        media: updatedMediaList,
+      });
+    } catch (error) {
+      console.error("Upload error", error);
     }
   }
-
   function handleDurationChange(event, mediaId) {
     const newDuration = event.target.value;
 
     slideshowService.updateSlideshowMedia(
-      props.slideshow._id,
+      props.slideshow.id,
       mediaId,
       newDuration
     );
 
     const updatedMediaList = props.slideshow.media.map((media) => {
-      if (media._id === mediaId) {
+      if (media.id === mediaId) {
         return { ...media, duration: newDuration };
       }
       return media;
@@ -100,42 +100,28 @@ function SlideshowConfig(props) {
   }
 
   function handleOrderChange(newOrder) {
-    console.log(newOrder);
-    props.setSlideshow({ ...props.slideshow, media: newOrder });
-
-    const updatedOrder = newOrder.map((media, index) => ({
-      mediaId: media._id,
-      newPosition: index,
+    const newOrderWithId = newOrder.map((media, index) => ({
+      ...media,
+      order: index,
     }));
-    console.log("updatedOrder", updatedOrder);
-
-    slideshowService
-      .updateMediaOrder(props.slideshow._id, updatedOrder)
-      .then((response) => {
-        console.log("Order updated in the database", response);
-      })
-      .catch((error) => {
-        console.error("Error updating order", error);
-      });
+    mediaService.updateOrder(newOrderWithId);
+    props.setSlideshow({ ...props.slideshow, media: newOrderWithId });
   }
+
   function deleteMedia(mediaToDelete) {
-    slideshowService
-      .deleteMedia(props.slideshow._id, mediaToDelete._id)
-      .then(() => {
-        const updatedMediaList = props.slideshow.media.filter(
-          (media) => media._id !== mediaToDelete._id
-        );
-        props.setSlideshow({ ...props.slideshow, media: updatedMediaList });
-      });
+    console.log(mediaToDelete);
+    mediaService.deleteMedia(mediaToDelete.id).then(() => {
+      const updatedMediaList = props.slideshow.media.filter(
+        (media) => media.id !== mediaToDelete.id
+      );
+      props.setSlideshow({ ...props.slideshow, media: updatedMediaList });
+    });
   }
 
-  function addPanneau() {
-    slideshowService.addPanneau(props.slideshow._id).then((data) => {
-      console.log("addPanneau", data);
-      props.setSlideshow(data);
-      console.log("data addPanneau", data.data.newMedia);
-      const updatedMediaList = [...props.slideshow.media, data.data.newMedia];
-      console.log("updatedMediaList", updatedMediaList);
+  function addPanel() {
+    mediaService.addPanel(props.slideshow.id).then((data) => {
+      console.log(data);
+      const updatedMediaList = [...props.slideshow.media, data.media];
       props.setSlideshow({
         ...props.slideshow,
         media: updatedMediaList,
@@ -204,7 +190,7 @@ function SlideshowConfig(props) {
                 >
                   Upload
                 </MenuItem>
-                <MenuItem onClick={addPanneau}>Panneau</MenuItem>
+                <MenuItem onClick={addPanel}>Panneau</MenuItem>
               </Menu>
             </Box>
           </Stack>
@@ -218,11 +204,8 @@ function SlideshowConfig(props) {
             <TableContainer>
               <Table sx={{ borderCollapse: "separate", borderSpacing: 0 }}>
                 <TableBody>
-                  <ReactSortable
-                    list={props.slideshow.media}
-                    setList={handleOrderChange}
-                  >
-                    {props.slideshow.media.map((media, index) => (
+                  <ReactSortable list={sortedMedia} setList={handleOrderChange}>
+                    {sortedMedia.map((media, index) => (
                       <TableRow sx={{ width: "100%" }} key={index}>
                         <TableCell
                           sx={{
@@ -260,11 +243,10 @@ function SlideshowConfig(props) {
                             "Panneau"
                           )}
                         </TableCell>
-
                         <TableCell sx={{ width: "40%" }} p={0}>
                           <TextField
                             value={media.duration}
-                            onChange={(e) => handleDurationChange(e, media._id)}
+                            onChange={(e) => handleDurationChange(e, media.id)}
                             size="small"
                             type="number"
                             disabled={media.type.split("/")[0] === "video"}

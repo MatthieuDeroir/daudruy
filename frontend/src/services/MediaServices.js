@@ -4,7 +4,9 @@ const TOKEN = JSON.parse(localStorage.getItem('token')); // Récupère le token 
 
 export const mediaService = {
   uploadMedia,
-  deleteMedia
+  deleteMedia,
+  updateOrder,
+  addPanel
 };
 
 
@@ -26,7 +28,7 @@ function uploadMedia(file, slideshowId) {
 
 
 function deleteMedia(mediaId) {
-  return fetch(`${API_URL}/api/media/${mediaId}`, {
+  return fetch(`${API_URL}/api/media/delete/${mediaId}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -36,6 +38,33 @@ function deleteMedia(mediaId) {
     .then(handleResponse)
     .catch(handleError);
 }
+
+function updateOrder (newOrder) {
+  console.log(newOrder);
+  return fetch(`${API_URL}/api/media/order/`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${TOKEN}` // Ajout du token dans les en-têtes
+    },
+    body: JSON.stringify({newOrder: newOrder})
+  })
+    .then(handleResponse)
+    .catch(handleError);
+}
+
+function addPanel (slideshowId) {
+  return fetch(`${API_URL}/api/media/panel/${slideshowId}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${TOKEN}` // Ajout du token dans les en-têtes
+    }
+  })
+    .then(handleResponse)
+    .catch(handleError);
+}
+
 
 function handleResponse(response) {
   if (!response.ok) {

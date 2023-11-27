@@ -7,6 +7,7 @@ const Media = require("../Models/MediaModel");
 const Slideshow = require("../Models/SlideshowModel");
 
 exports.uploadFile = async (req, res) => {
+  console.log(req.file);
   const slideshowId = req.body.slideshowId;
   const originalFilename = req.file.originalname;
   const uniqueValue = Math.random().toString();
@@ -25,7 +26,7 @@ exports.uploadFile = async (req, res) => {
       console.log(err);
       return res
         .status(500)
-        .send({ message: "Le téléchargement du fichier a échoué", code: 500 });
+        .send({ message: "Le téléchargement du fichier a échoué 05", code: 500 });
     }
 
     // Si le fichier est une vidéo, obtenez sa durée.
