@@ -4,7 +4,7 @@ const {Media, Slideshow} = require("../Models");
 exports.getAllSlideshows = async (req, res) => {
     try {
         const slideshows = await Slideshow.findAll({
-            include: [Media] // Si vous voulez inclure les médias associés
+            include: [{ model: Media, as: 'media' }] // Utilisez l'alias 'media' pour l'association
         });
         res.status(200).json({
             status: "success",

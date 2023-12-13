@@ -6,6 +6,7 @@ const Slideshow = require('./SlideshowModel');
 const SlideshowStatus = require('./SlideshowStatusModel');
 const User = require('./UserModel');
 const Settings = require('./SettingsModel');
+const SlideshowMedia = require('./SlideshowMediaModel');
 
 Media.belongsTo(Slideshow);
 Slideshow.hasMany(Media, {as: 'medias'});
@@ -16,5 +17,6 @@ module.exports = {
     Slideshow,
     SlideshowStatus,
     User,
-    Settings
+    Settings,
+    SlideshowMedia
 };

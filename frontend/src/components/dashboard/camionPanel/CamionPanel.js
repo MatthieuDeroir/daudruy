@@ -105,7 +105,7 @@ function CamionPanel() {
               sx={{ color: "text.primary" }}
               className="headerTitle"
             >
-              Panneau de contrôle des camions
+              Panneau de contrôle
             </Typography>
           </Box>
           <Box className="headerRight">

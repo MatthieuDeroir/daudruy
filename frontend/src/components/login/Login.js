@@ -18,7 +18,7 @@ function Login() {
 
   async function handleSubmit(e) {
     if (e) e.preventDefault();
-    const username = "User";
+    const username = "user";
     try {
       const user = await userService.signing(username, password);
 
