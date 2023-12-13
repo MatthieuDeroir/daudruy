@@ -4,7 +4,7 @@ function MediasPage({ media }) {
   
   const renderMedia = () => {
     if (media.type.includes('image')) {
-      return <img style={{width:"480px", height:"240px"}} src={process.env.REACT_APP_MEDIA_DISPLAY_PATH + media.path} alt={`Media ${media._id}`} />;
+      return <img style={{width:"480px", height:"240px"}} src={process.env.REACT_APP_MEDIA_DISPLAY_PATH + media.path} alt={`Media ${media.id}`} />;
     }
     else if (media.type.includes('video')) {
       return (

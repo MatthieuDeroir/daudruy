@@ -42,7 +42,7 @@ function SlideshowConfig(props) {
     event.preventDefault();
     if (event.target.files[0] !== undefined) {
       if (event.target.files[0].type === "video/mp4") {
-        const id = props.slideshow._id;
+        const id = props.slideshow.id;
         await mediaService
           .uploadMedia(event.target.files[0], id)
           .then((data) => {
@@ -62,7 +62,7 @@ function SlideshowConfig(props) {
         event.target.files[0].type === "image/jpeg" ||
         event.target.files[0].type === "image/jpg"
       ) {
-        const id = props.slideshow._id;
+        const id = props.slideshow.id;
         await mediaService
           .uploadMedia(event.target.files[0], id)
           .then((data) => {
@@ -85,13 +85,13 @@ function SlideshowConfig(props) {
     const newDuration = event.target.value;
 
     slideshowService.updateSlideshowMedia(
-      props.slideshow._id,
+      props.slideshow.id,
       mediaId,
       newDuration
     );
 
     const updatedMediaList = props.slideshow.media.map((media) => {
-      if (media._id === mediaId) {
+      if (media.id === mediaId) {
         return { ...media, duration: newDuration };
       }
       return media;
@@ -104,13 +104,13 @@ function SlideshowConfig(props) {
     props.setSlideshow({ ...props.slideshow, media: newOrder });
 
     const updatedOrder = newOrder.map((media, index) => ({
-      mediaId: media._id,
+      mediaId: media.id,
       newPosition: index,
     }));
     console.log("updatedOrder", updatedOrder);
 
     slideshowService
-      .updateMediaOrder(props.slideshow._id, updatedOrder)
+      .updateMediaOrder(props.slideshow.id, updatedOrder)
       .then((response) => {
         console.log("Order updated in the database", response);
       })
@@ -120,17 +120,17 @@ function SlideshowConfig(props) {
   }
   function deleteMedia(mediaToDelete) {
     slideshowService
-      .deleteMedia(props.slideshow._id, mediaToDelete._id)
+      .deleteMedia(props.slideshow.id, mediaToDelete.id)
       .then(() => {
         const updatedMediaList = props.slideshow.media.filter(
-          (media) => media._id !== mediaToDelete._id
+          (media) => media.id !== mediaToDelete.id
         );
         props.setSlideshow({ ...props.slideshow, media: updatedMediaList });
       });
   }
 
   function addPanneau() {
-    slideshowService.addPanneau(props.slideshow._id).then((data) => {
+    slideshowService.addPanneau(props.slideshow.id).then((data) => {
       console.log("addPanneau", data);
       props.setSlideshow(data);
       console.log("data addPanneau", data.data.newMedia);
@@ -264,7 +264,7 @@ function SlideshowConfig(props) {
                         <TableCell sx={{ width: "40%" }} p={0}>
                           <TextField
                             value={media.duration}
-                            onChange={(e) => handleDurationChange(e, media._id)}
+                            onChange={(e) => handleDurationChange(e, media.id)}
                             size="small"
                             type="number"
                             disabled={media.type.split("/")[0] === "video"}

@@ -1,12 +1,8 @@
-const mongoose = require('mongoose');
-const MediaSchema = require('./MediaModel').schema;
-const Schema = mongoose.Schema;
+const { DataTypes } = require('sequelize');
+const sequelize = require('../Database/Sequelize');
 
-const SlideshowSchema = new Schema({
-    name: String,
-    media: [MediaSchema] // Ceci est un tableau de médias
+const Slideshow = sequelize.define('Slideshow', {
+    name: DataTypes.STRING,
 });
-
-const Slideshow = mongoose.model('Slideshow', SlideshowSchema);
 
 module.exports = Slideshow;
