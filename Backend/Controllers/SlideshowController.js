@@ -4,10 +4,7 @@ const {Media, Slideshow} = require("../Models");
 exports.getAllSlideshows = async (req, res) => {
     try {
         const slideshows = await Slideshow.findAll({
-            include: [{
-                model: Media,
-                as: 'media'
-            }]
+            include: [{ model: Media, as: 'media' }] // Utilisez l'alias 'media' pour l'association
         });
         res.status(200).json({
             status: "success",
@@ -70,10 +67,7 @@ exports.createSlideshow = async (req, res) => {
 exports.getSlideshow = async (req, res) => {
     try {
         const slideshow = await Slideshow.findByPk(req.params.id, {
-            include: {
-                model: Media,
-                as: 'media'
-            }
+            include: [Media]
         });
         if (!slideshow) {
             return res.status(404).json({
@@ -106,34 +100,31 @@ exports.addSlideshow = async (req, res) => {
 };
 
 exports.deleteSlideshow = async (req, res) => {
-
     const slideshowId = req.params.id;
 
     try {
         // Supprimer les fichiers médias associés, si nécessaire
         const slideshow = await Slideshow.findByPk(slideshowId, {
-            include: {
-                model: Media,
-                as: 'media'
-            }
+            include: [Media]
         });
 
+        for (const media of slideshow.Medias) {
+            await media.destroy();
+        }
+
         await Slideshow.destroy({
-            where: {id: slideshow.id}
+            where: {id: slideshowId}
         });
 
         res.status(204).json({
             status: "success",
             data: null,
-            message: "Slideshow supprimé avec succès"
         });
     } catch (err) {
         res.status(500).json({
             status: "fail",
             message: err.message || "Une erreur est survenue lors de la suppression du slideshow",
-            log: err
         });
-        console.log(err);
     }
 };
 
@@ -166,10 +157,7 @@ exports.updateMediaOrder = async (req, res) => {
     try {
         // Récupérez le slideshow actuel et les médias associés
         const slideshow = await Slideshow.findByPk(slideshowId, {
-            include: {
-                model: Media,
-                as: 'media'
-            }
+            include: [Media]
         });
 
         if (!slideshow) {

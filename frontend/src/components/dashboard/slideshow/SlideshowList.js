@@ -68,7 +68,7 @@ function SlideshowList(props) {
   }
 
   function playSlideshow(slideshow) {
-    const data = { slideshowId: slideshow.id, isRunning: true };
+    const data = { slideshowId: slideshow.id, isRunning: true , isTesting: false};
     slideshowStatutsService.updateSlideshowStatus(data);
     setSlideshowToPlay(data);
   }

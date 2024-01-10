@@ -2,19 +2,42 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../Database/Sequelize');
 
 const Media = sequelize.define('Media', {
-  originalFilename: DataTypes.STRING,
-  hashedFilename: DataTypes.STRING,
-  user: DataTypes.STRING,
-  format: DataTypes.STRING,
+  originalFilename: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  hashedFilename: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  user: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  format: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   date: {
     type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW
+    defaultValue: DataTypes.NOW,
   },
-  path: DataTypes.STRING,
-  duration: DataTypes.INTEGER,
-  order: DataTypes.INTEGER,
-  type: DataTypes.STRING
-  // data: {}, // Sequelize ne supporte pas directement les champs de type objet non structuré. Vous devrez peut-être le gérer différemment ou le sérialiser en tant que JSON.
+  path: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  duration: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  order: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  type: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
 });
 
 module.exports = Media;

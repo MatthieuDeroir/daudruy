@@ -51,7 +51,7 @@ exports.signup = async (req, res) => {
 exports.changePassword = async (req, res) => {
   try {
     const { oldPassword, newPassword } = req.body;
-    const username = req.body.username; // Ou obtenir le nom d'utilisateur de la session / JWT
+    const username = "user"; // Ou obtenir le nom d'utilisateur de la session / JWT
 
     // Trouver l'utilisateur par son nom d'utilisateur
     const user = await User.findOne({ where: { username } });
