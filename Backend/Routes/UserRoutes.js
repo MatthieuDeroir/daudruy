@@ -18,7 +18,7 @@ router.post('/signup', async (req, res) => {
 });
 
 // Connexion
-router.post('/signin', async (req, res) => {
+router.post('/signing', async (req, res) => {
     try {
         const user = await User.findOne({ username: req.body.username });
         if (!user || !bcrypt.compareSync(req.body.password, user.password)) {
