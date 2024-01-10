@@ -1,5 +1,3 @@
-const sequelize = require('../Database/Sequelize');
-
 const Camion = require('./CamionModel');
 const Media = require('./MediaModel');
 const Slideshow = require('./SlideshowModel');
