@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../Models/UserSchema');
+const User = require('../Models/UserModel');
 const jwt = require('jsonwebtoken');
-const { key } = require ('../config');
 
 // Inscription
 router.post('/signup', async (req, res) => {
