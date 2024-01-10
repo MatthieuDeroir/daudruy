@@ -32,15 +32,15 @@ const settingsRoutes = require('./Routes/SettingsRoutes');
 
 
 // Utilisation des routes pour les camions
-app.use('/camions', camionRoutes);
+app.use('/api/camions', camionRoutes);
 // Utilisation des routes pour les médias
-app.use('/media-management', mediaRoutes);
+app.use('/api/media-management', mediaRoutes);
 // Route statique pour les médias
-app.use('/media', express.static('media'));
+app.use('/api/media', express.static('media'));
 // Utilisation des routes pour l'authentification
-app.use('/auth', authRoutes);
+app.use('/api/auth', authRoutes);
 // Utilisation des routes pour les paramètres
-app.use('/settings', settingsRoutes);
+app.use('/api/settings', settingsRoutes);
 
 
 
