@@ -18,9 +18,9 @@ mongoose.connect('mongodb://localhost:27017/truckDisplay', { useNewUrlParser: tr
     .catch(err => console.error('Could not connect to MongoDB', err));
 
 // Import des modèles
-const Camion = require('./Models/CamionSchema');
-const Media = require('./Models/MediaSchema');
-const User = require('./Models/UserSchema');
+const Camion = require('./Models/CamionModel');
+const Media = require('./Models/MediaModel');
+const User = require('./Models/UserModel');
 
 // Import des routes
 const mediaRoutes = require('./Routes/MediaRoutes');
