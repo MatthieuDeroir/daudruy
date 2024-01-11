@@ -1,23 +1,24 @@
 {
-  "name": "frontend",
+  "name": "display",
   "version": "0.1.0",
   "private": true,
+  "main": "src/main.js",
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "concurrently": "^8.2.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "electron": "ELECTRON_START_URL=http://localhost:3000 electron .",
-    "build": "electron-builder",
+    "start": "PORT=2000 react-scripts start",
+    "build": "react-scripts build",
     "test": "react-scripts test",
-    "dev": "concurrently \"npm start\" \"wait-on http://localhost:3000 && npm run electron\"",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "electron-dev": "electron ."
   },
   "eslintConfig": {
     "extends": [
@@ -38,10 +39,6 @@
     ]
   },
   "devDependencies": {
-    "concurrently": "^8.2.1",
-    "electron": "^26.2.2",
-    "electron-builder": "^24.6.4",
-    "wait-on": "^7.0.1"
-  },
-  "main": "electron.js"
+    "electron": "^27.1.0"
+  }
 }
