@@ -7,7 +7,7 @@ const express = require('express');
 const router = express.Router();
 
 router.post('/upload', authMiddleware.protect, upload.single('file'), uploadController.uploadFile);
-router.delete('/delete/:id', authMiddleware.protect,uploadController.deleteFile);
+router.delete('/delete/:id',uploadController.deleteFile);
 router.put('/order', authMiddleware.protect,uploadController.updateOrder);
 router.post('/panel/:id', authMiddleware.protect,uploadController.addPanel)
 

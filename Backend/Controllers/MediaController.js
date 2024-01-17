@@ -1,6 +1,7 @@
 const fs = require("fs");
 const crypto = require("crypto");
 const path = require("path");
+const util = require('util');
 const ffmpeg = require("fluent-ffmpeg");
 const Media = require("../Models/MediaModel");
 const sequelize = require("../Database/Sequelize");
@@ -66,41 +67,41 @@ exports.uploadFile = async (req, res) => {
           .send({ message: "Échec du téléchargement du fichier", code: 500 });
       }
   };
+const unlinkAsync = util.promisify(fs.unlink);
 
 exports.deleteFile = async (req, res) => {
-  try {
-    const media = await Media.findByPk(req.params.id);
-    
-    // Define the file path
-    if (!media.type.startsWith("panel")) {
-    const filePath = path.join(__dirname, process.env.UPLOAD_PATH, `${media.hashedFilename}.${media.format}`);
-    fs.unlink(filePath, async (err) => {
-        if (err) {
-          console.error(err);
-          return res.status(500).send({
-            message: "Une erreur s'est produite lors de la suppression du fichier",
-            code: 500,
-          });
+    try {
+        const media = await Media.findByPk(req.params.id);
+        const filePath = media ? path.join(__dirname, process.env.UPLOAD_PATH, `${media.hashedFilename}.${media.format}`) : null;
+
+        // Check if file exists on disk
+        const fileExists = filePath && fs.existsSync(filePath);
+
+        if (media) {
+            if (!media.type.startsWith("panel") && fileExists) {
+                await unlinkAsync(filePath);
+            }
+
+            // Delete the media record from the database
+            await media.destroy();
+            return res.status(200).send({ message: "Fichier et enregistrement média supprimés avec succès", code: 200 });
+        } else if (fileExists) {
+            // Handle case where media is not in DB but file exists on disk
+            await unlinkAsync(filePath);
+            return res.status(200).send({ message: "Fichier supprimé avec succès, aucun enregistrement média trouvé", code: 200 });
+        } else {
+            // Neither file nor media record exists
+            return res.status(404).send({ message: "Aucun fichier ou enregistrement média trouvé", code: 404 });
         }
-  
-        // If there's no error in deleting the file, delete the media record from the database
-        await media.destroy();
-        res.status(200).send({ message: "Fichier supprimé avec succès", code: 200 });
-      });
-    }else{
-        await media.destroy();
-        res.status(200).send({ message: "Fichier supprimé avec succès", code: 200 });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send({
+            message: "Une erreur s'est produite lors de la tentative de suppression",
+            code: 500,
+        });
     }
-    // Delete the file
-    
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({
-      message: "Une erreur s'est produite lors de la suppression du fichier",
-      code: 500,
-    });
-  }
 };
+
 exports.updateOrder = async (req, res) => {
   const { newOrder } = req.body;
   const transaction = await sequelize.transaction();
