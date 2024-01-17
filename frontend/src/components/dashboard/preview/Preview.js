@@ -1,6 +1,7 @@
 import {Box, Grid, IconButton, Paper, Stack, Typography} from "@mui/material";
 import VideoLabelIcon from "@mui/icons-material/VideoLabel";
 import React from "react";
+const DISPLAY_URL = process.env.REACT_APP_DISPLAY_URL;
 
 function Preview() {
     return (
@@ -29,7 +30,7 @@ function Preview() {
                         }}
                     >
                         <iframe
-                            src="http://localhost:2000"
+                            src={DISPLAY_URL}
                             title="Preview"
                             style={{border: "none", height: "240px", width: "480px"}}
                         ></iframe>
