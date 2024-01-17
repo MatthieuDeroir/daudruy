@@ -23,17 +23,23 @@ function App() {
           veilleService.getVeille(),
           camionService.getCamions(),
           slideshowService.getSlideshow(),
+
           slideshowStatutsService.getSlideshowStatus(),
         ]);
+
+      console.log(slideshowRes);
 
       setIsVeilleMode(checkIsInVeillePeriod(veilleRes[0]));
       setCamionsData(camionsRes);
       const currentSlideshowId = slideshowStatusRes[0]?.slideshowId;
+      console.log('current id:',currentSlideshowId)
+      console.log(slideshowStatusRes[0])
       if (slideshowStatusRes[0]?.isRunning) {
+        console.log(slideshowStatusRes[0]?.isRunning)
         const foundSlideshow = slideshowRes.data.slideshows.find(
-          (slideshow) => slideshow._id === currentSlideshowId
+          (slideshow) => slideshow.id === currentSlideshowId
         );
-    
+        console.log(foundSlideshow)
 
         // Vérifie si le diaporama actuel est le même que le précédent
         if (!_.isEqual(currentSlideshow, foundSlideshow)) {
@@ -97,7 +103,7 @@ function App() {
              
             }}
           >
-            {media.type === "Panneau" ? (
+            {media.type === "panel" ? (
               <CamionPage camionsData={camionsData} />
             ) : (
               <MediasPage media={media} />

@@ -7,7 +7,8 @@ export const slideshowService = {
 };
 
 function getSlideshow() {
-  return fetch(`${API_URL}/api/slideshow`, {
+  console.log("getSlideshow")
+  const feteched = fetch(`${API_URL}/api/slideshow`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -16,6 +17,9 @@ function getSlideshow() {
   })
   .then(handleResponse)
   .catch(handleError);
+
+  console.log('fetched',feteched)
+    return feteched
 }
 
 function handleResponse(response) {
