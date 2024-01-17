@@ -50,12 +50,13 @@ function SlideshowList(props) {
   }
 
   async function deleteSlideshow(eventToDelete) {
+    console.log("delete", eventToDelete);
     const data = { slideshowId: null, isRunning: false, isTesting: false };
     await slideshowStatutsService.updateSlideshowStatus(data);
     setSlideshowToPlay(data);
-    await slideshowService.deleteSlideshow(eventToDelete).then((data) => {
+    await slideshowService.deleteSlideshow(eventToDelete.id).then((data) => {
       props.setSlideshows(
-        props.slideshows.filter((slideshow) => slideshow.id !== eventToDelete)
+        props.slideshows.filter((slideshow) => slideshow.id !== eventToDelete.id)
       );
       closeDialog();
       setSlideshowToDelete({});
