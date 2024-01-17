@@ -6,9 +6,12 @@ require('dotenv').config();
 exports.signin = async (req, res) => {
   try {
     const { username, password } = req.body;
+    console.log("username", username)
+    console.log("password", password)
 
     // Trouver l'utilisateur par son nom d'utilisateur
     const user = await User.findOne({ where: { username } });
+    console.log("user", user)
 
     // Vérifier le mot de passe
     if (!user || !(await bcrypt.compare(password, user.password))) {
@@ -36,6 +39,7 @@ exports.signup = async (req, res) => {
     // Créer un nouvel utilisateur
     const user = await User.create({ username, password });
 
+    console.log(process.env.JWT_SECRET)
     // Générer un token JWT
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
