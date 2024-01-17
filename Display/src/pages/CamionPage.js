@@ -11,16 +11,16 @@ function CamionPage({ camionsData }) {
     }
   };
 
-  const getCellStyle = (text, fontSize) => 
+  const getCellStyle = (text, fontSize) =>
 {
     let style = {
-      textAlign: "center", 
-      width: "55%", 
-      fontSize: fontSize, 
-      margin: "-30px", 
+      textAlign: "center",
+      width: "55%",
+      fontSize: fontSize,
+      margin: "-30px",
       padding: "0px"
     };
-    
+
     // Assumption: Each character is around 10px wide when font size is "30px"
     // This is a rough estimation and may not be accurate for all fonts and characters
     const estimatedTextWidth = text.length * 10;
@@ -31,6 +31,16 @@ function CamionPage({ camionsData }) {
 
     return style;
   };
+
+    const DestinationIcon = ({ destination }) => {
+        if (destination === 'Accueil') {
+            return <img src={`./A.png`} alt="Acceuil" style={{width: "60px", height: "60px"}} />;
+        } else if (destination === 'Balance') {
+            return <img src={`./B.png`} alt="Balance" style={{width: "60px", height: "60px"}} />;
+        } else {
+            return null;
+        }
+    };
 
   return (
     <table style={{ width: "480px", height: "240px", borderSpacing: "0px" }}>
@@ -68,8 +78,8 @@ function CamionPage({ camionsData }) {
                 </span>
               </div>
             </td>
-            <td style={{ width: "25%", fontSize: "30px", height: "60px", padding: "0px" }}>
-              {camion.destination}
+            <td>
+                <DestinationIcon destination={camion.destination} />
             </td>
           </tr>
         ) : <tr key={index} style={{ height: "60px" }}></tr>
