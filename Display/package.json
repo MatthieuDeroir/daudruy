@@ -6,18 +6,20 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "craco": "^0.0.3",
+    "dotenv": "^16.3.1",
+    "dotenv-cli": "^7.3.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "electron": "ELECTRON_START_URL=http://localhost:3000 electron .",
-    "build": "electron-builder",
-    "test": "react-scripts test",
-    "dev": "concurrently \"npm start\" \"wait-on http://localhost:3000 && npm run electron\"",
-    "eject": "react-scripts eject"
+    "react-start": "dotenv -e .env.production craco start",
+    "electron-start": "electron .",
+    "build": "react-scripts build",
+    "start": "dotenv -e .env.development concurrently \"serve -s build\" \"wait-on http://localhost:2000 && npm run electron-start\"",
+    "dev": "dotenv -e .env.development craco start"
   },
   "eslintConfig": {
     "extends": [
@@ -43,5 +45,5 @@
     "electron-builder": "^24.6.4",
     "wait-on": "^7.0.1"
   },
-  "main": "electron.js"
+  "main": "main.js"
 }
