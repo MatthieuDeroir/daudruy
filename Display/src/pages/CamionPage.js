@@ -54,7 +54,7 @@ function CamionPage({ camionsData }) {
                 <img
                     src="go.png" // Remplacez par le chemin réel de votre image
                     alt="Go"
-                    style={{ transform: "rotate(90deg)" }}
+                    style={{ height:"60px" }}
                 />
               {/*<div*/}
               {/*  style={{*/}
