@@ -10,8 +10,8 @@
   body {
     font-family: "D-DIN-Bold", sans-serif;
     margin: 0px;
-    max-width: 480px;
-    max-height: 240px;
+    max-width: 288px;
+    max-height: 144px;
     background-color: #000000;
     color: rgb(255, 255, 255);
     overflow: hidden;
