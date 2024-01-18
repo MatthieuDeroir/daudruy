@@ -46,7 +46,7 @@ function CamionPage({camionsData}) {
             {camionsData.map((camion, index) => (
                 camion.action === "go" ? (
                     <tr key={index} style={{height: "33%"}}> {/* Equal height for each row */}
-                        <td style={{width: "40%", ...getCellStyle(camion.immatriculation, getFontSize(camion.immatriculation, "50px", "40px", "30px", 9, 7))}}>
+                        <td style={{width: "60%", ...getCellStyle(camion.immatriculation, getFontSize(camion.immatriculation, "50px", "40px", "30px", 9, 7))}}>
                             {camion.immatriculation}
                         </td>
                         <td style={{width: "20%"}}>
@@ -56,7 +56,8 @@ function CamionPage({camionsData}) {
                                 style={{height: "60px"}}
                             />
                         </td>
-                        <td style={{width: "40%"}}>
+                        {/* the content of the 3rd td must be align to the right*/}
+                        <td style={{width: "20%", textAlign: "right"}}>
                             <DestinationIcon destination={camion.destination}/>
                         </td>
                     </tr>
