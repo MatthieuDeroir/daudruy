@@ -51,25 +51,23 @@ function CamionPage({ camionsData }) {
               {camion.immatriculation}
             </td>
             <td style={{ width: "20%", padding: "0px" }}>
-              <div
-                style={{
-                  width: "0px",
-                  height: "0px",
-                  borderLeft: "25px solid transparent",
-                  borderRight: "25px solid transparent",
-                  borderBottom: "50px solid #00a13b",
-                  position: "relative",
-                  transform: "rotate(90deg)",
-                }}
-              >
-                  <img
-                      src="go.png" // Remplacez par le chemin réel de votre image
-                      alt="Go"
-                      style={{
-                          width: "30px",
-                          height: "auto", // Vous pouvez ajuster la hauteur si nécessaire
-                      }}
-                  />
+                <img
+                    src="go.png" // Remplacez par le chemin réel de votre image
+                    alt="Go"
+                    style={{ transform: "rotate(90deg)" }}
+                />
+              {/*<div*/}
+              {/*  style={{*/}
+              {/*    width: "0px",*/}
+              {/*    height: "0px",*/}
+              {/*    borderLeft: "25px solid transparent",*/}
+              {/*    borderRight: "25px solid transparent",*/}
+              {/*    borderBottom: "50px solid #00a13b",*/}
+              {/*    position: "relative",*/}
+              {/*    transform: "rotate(90deg)",*/}
+              {/*  }}*/}
+              {/*>*/}
+
 
               </div>
             </td>
