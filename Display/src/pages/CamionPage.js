@@ -43,7 +43,7 @@ function CamionPage({ camionsData }) {
     };
 
   return (
-    <table style={{ width: "480px", height: "240px", borderSpacing: "0px" }}>
+    <table style={{ width: "432", height: "216", borderSpacing: "0px" }}>
       {camionsData.map((camion, index) =>
         camion.action === "go" ? (
           <tr key={index} style={{ height: "60px" }}>
