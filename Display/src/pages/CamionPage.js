@@ -69,7 +69,7 @@ function CamionPage({ camionsData }) {
               {/*>*/}
 
 
-              </div>
+              {/*</div>*/}
             </td>
             <td>
                 <DestinationIcon destination={camion.destination} />
