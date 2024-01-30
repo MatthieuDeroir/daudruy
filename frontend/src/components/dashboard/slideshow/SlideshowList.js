@@ -50,7 +50,6 @@ function SlideshowList(props) {
   }
 
   async function deleteSlideshow(eventToDelete) {
-    console.log("delete", eventToDelete);
     const data = { slideshowId: null, isRunning: false, isTesting: false };
     await slideshowStatutsService.updateSlideshowStatus(data);
     setSlideshowToPlay(data);

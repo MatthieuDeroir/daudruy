@@ -25,7 +25,7 @@ function App() {
           slideshowService.getSlideshow(),
           slideshowStatutsService.getSlideshowStatus(),
         ]);
-
+        console.log("slideshowRes", slideshowRes);
       setIsVeilleMode(checkIsInVeillePeriod(veilleRes[0]));
       setCamionsData(camionsRes);
       const currentSlideshowId = slideshowStatusRes[0]?.slideshowId;
