@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 function TestPage() {
   const colors = ['#FF0000', '#00FF00', '#0000FF']; // RGB colors
   const [colorIndex, setColorIndex] = useState(0);
+  const width = process.env.REACT_APP_WIDTH;
+    const height = process.env.REACT_APP_HEIGHT;
 
   useEffect(() => {
     const colorInterval = setInterval(() => {
@@ -17,8 +19,8 @@ function TestPage() {
   return (
     <div
       style={{
-        width: '480px',
-        height: '240px',
+        width: width + 'px',
+        height: height + 'px',
         backgroundColor: colors[colorIndex],
       }}
     />

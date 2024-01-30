@@ -21,10 +21,10 @@ function CamionPage({ camionsData }) {
   const getCellStyle = (text, fontSize) => {
     let style = {
       textAlign: "center",
-      width: "55%",
       fontSize: fontSize,
-      margin: "-30px",
+      margin: "0px",
       padding: "0px",
+      overflow: "hidden",
     };
 
     // Assumption: Each character is around 10px wide when font size is "30px"
@@ -43,67 +43,67 @@ function CamionPage({ camionsData }) {
     return style;
   };
 
+  const DestinationIcon = ({ destination }) => {
+    if (destination === "Accueil") {
+      return (
+        <img
+          src={`./A.png`}
+          alt="Acceuil"
+          style={{ width: "60px", height: "60px" }}
+        />
+      );
+    } else if (destination === "Balance") {
+      return (
+        <img
+          src={`./B.png`}
+          alt="Balance"
+          style={{ width: "60px", height: "60px" }}
+        />
+      );
+    } else {
+      return null;
+    }
+  };
+
   return (
-    <table style={{ width: "480px", height: "240px", borderSpacing: "0px" }}>
+    <table style={{ width: "432px", height: "216px", borderSpacing: "0px" }}>
       {camionsData.map((camion, index) =>
         camion.action === "go" ? (
-          <tr key={index} style={{ height: "60px" }}>
+          <tr key={index} style={{ height: "33%" }}>
+            {" "}
+            {/* Equal height for each row */}
             <td
-              style={getCellStyle(
-                camion.immatriculation,
-                getFontSize(
+              style={{
+                width: "60%",
+                ...getCellStyle(
                   camion.immatriculation,
-                  "50px",
-                  "40px",
-                  "30px",
-                  9,
-                  7
-                )
-              )}
+                  getFontSize(
+                    camion.immatriculation,
+                    "50px",
+                    "40px",
+                    "30px",
+                    9,
+                    7
+                  )
+                ),
+              }}
             >
               {camion.immatriculation}
             </td>
-            <td style={{ width: "20%", padding: "0px" }}>
-              <div
-                style={{
-                  width: "0px",
-                  height: "0px",
-                  borderLeft: "25px solid transparent",
-                  borderRight: "25px solid transparent",
-                  borderBottom: "50px solid #00a13b",
-                  position: "relative",
-                  transform: "rotate(90deg)",
-                }}
-              >
-                <span
-                  style={{
-                    position: "absolute",
-                    top: "25px",
-                    left: "-15px",
-                    width: "30px",
-                    color: "#fff",
-                    textAlign: "center",
-                    transform: "rotate(-90deg)",
-                    fontSize: "14px",
-                  }}
-                >
-                  Go
-                </span>
-              </div>
+            <td style={{ width: "20%" }}>
+              <img
+                src="go.png" // Remplacez par le chemin réel de votre image
+                alt="Go"
+                style={{ height: "60px" }}
+              />
             </td>
-            <td
-              style={{
-                width: "25%",
-                fontSize: "30px",
-                height: "60px",
-                padding: "0px",
-              }}
-            >
-              {camion.destination}
+            {/* the content of the 3rd td must be align to the right*/}
+            <td style={{ width: "20%", textAlign: "right" }}>
+              <DestinationIcon destination={camion.destination} />
             </td>
           </tr>
         ) : (
-          <tr key={index} style={{ height: "60px" }}></tr>
+          <tr key={index} style={{ height: "33%" }}></tr> // Ensure all rows have equal height
         )
       )}
     </table>

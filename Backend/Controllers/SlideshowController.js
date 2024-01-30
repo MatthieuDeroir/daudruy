@@ -1,10 +1,11 @@
 const {Media, Slideshow} = require("../Models");
-
+const path = require('path');
+const fs = require('fs').promises;
 
 exports.getAllSlideshows = async (req, res) => {
     try {
         const slideshows = await Slideshow.findAll({
-            include: [{ model: Media, as: 'media' }] // Utilisez l'alias 'media' pour l'association
+            include: [{model: Media, as: "media"}], // Utilisez l'alias 'media' pour l'association
         });
         res.status(200).json({
             status: "success",
@@ -20,7 +21,6 @@ exports.getAllSlideshows = async (req, res) => {
     }
 };
 
-
 exports.addSimpleMediaToSlideshow = async (req, res) => {
     const slideshowId = req.params.id;
 
@@ -29,7 +29,7 @@ exports.addSimpleMediaToSlideshow = async (req, res) => {
             originalFilename: "Panneau",
             duration: 10,
             type: "Panneau",
-            SlideshowId: slideshowId
+            SlideshowId: slideshowId,
         });
 
         res.status(200).json({
@@ -63,11 +63,10 @@ exports.createSlideshow = async (req, res) => {
     }
 };
 
-
 exports.getSlideshow = async (req, res) => {
     try {
         const slideshow = await Slideshow.findByPk(req.params.id, {
-            include: [Media]
+            include: [Media],
         });
         if (!slideshow) {
             return res.status(404).json({
@@ -89,7 +88,6 @@ exports.getSlideshow = async (req, res) => {
     }
 };
 
-
 exports.addSlideshow = async (req, res) => {
     try {
         const slideshow = await Slideshow.create(req.body);
@@ -103,38 +101,56 @@ exports.deleteSlideshow = async (req, res) => {
     const slideshowId = req.params.id;
 
     try {
-        // Supprimer les fichiers médias associés, si nécessaire
+        // Find the slideshow with associated media
         const slideshow = await Slideshow.findByPk(slideshowId, {
-            include: [Media]
+            include: [{model: Media, as: 'media'}] // Use the correct association alias
         });
 
-        for (const media of slideshow.Medias) {
-            await media.destroy();
+
+        if (!slideshow) {
+            return res.status(404).send({
+                message: "Diaporama non trouvé",
+                code: 404,
+            });
         }
 
-        await Slideshow.destroy({
-            where: {id: slideshowId}
-        });
+        // Delete associated media files from the filesystem and the database
+        for (const medium of slideshow.dataValues.media) {
+            const filePath = path.resolve(__dirname, "../../frontend/public/media/", `${medium.hashedFilename}.${medium.format}`);
+            console.log(filePath);
+            // Check if the file exists and is not a panel type before attempting to delete
+            if (!medium.type.startsWith("panel")) {
+                try {
+                    await fs.unlink(filePath);
+                } catch (err) {
+                    console.error(err);
+                    // Handle the error according to your needs
+                }
+            }
 
-        res.status(204).json({
-            status: "success",
-            data: null,
-        });
-    } catch (err) {
-        res.status(500).json({
-            status: "fail",
-            message: err.message || "Une erreur est survenue lors de la suppression du slideshow",
+            // Delete the media record
+            await medium.destroy();
+        }
+
+        // Delete the slideshow record
+        await slideshow.destroy();
+
+        res.status(200).send({message: "Diaporama et médias associés supprimés avec succès", code: 200});
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({
+            message: "Une erreur s'est produite lors de la suppression du diaporama",
+            code: 500,
         });
     }
 };
-
 
 exports.updateSlideshow = async (req, res) => {
     try {
         const slideshow = await Slideshow.update(req.body, {
             where: {id: req.params.id},
             returning: true,
-            plain: true
+            plain: true,
         });
         res.status(200).json({
             status: "success",
@@ -157,7 +173,7 @@ exports.updateMediaOrder = async (req, res) => {
     try {
         // Récupérez le slideshow actuel et les médias associés
         const slideshow = await Slideshow.findByPk(slideshowId, {
-            include: [Media]
+            include: [Media],
         });
 
         if (!slideshow) {
@@ -169,7 +185,7 @@ exports.updateMediaOrder = async (req, res) => {
 
         // Mise à jour de l'ordre pour chaque média
         for (const orderItem of newOrder) {
-            const media = slideshow.Media.find(m => m.id === orderItem.mediaId);
+            const media = slideshow.Media.find((m) => m.id === orderItem.mediaId);
             if (media) {
                 await media.update({order: orderItem.newPosition});
             }
@@ -185,10 +201,11 @@ exports.updateMediaOrder = async (req, res) => {
         console.error(err);
         res.status(500).json({
             status: "fail",
-            message: err.message || "Une erreur est survenue lors de la mise à jour de l'ordre des médias",
+            message:
+                err.message ||
+                "Une erreur est survenue lors de la mise à jour de l'ordre des médias",
         });
     }
-
 };
 
 exports.updateSlideshowMedia = async (req, res) => {
@@ -215,7 +232,9 @@ exports.updateSlideshowMedia = async (req, res) => {
         console.error(err);
         res.status(500).json({
             status: "fail",
-            message: err.message || "Une erreur est survenue lors de la mise à jour du média",
+            message:
+                err.message ||
+                "Une erreur est survenue lors de la mise à jour du média",
         });
     }
 };
@@ -233,7 +252,11 @@ exports.deleteMediaFromSlideshow = async (req, res) => {
         }
 
         // Supprimer le fichier média du système de fichiers
-        const mediaPath = path.join(__dirname, "../../frontend/build/media", media.path);
+        const mediaPath = path.join(
+            __dirname,
+            "../../frontend/build/media",
+            media.path
+        );
 
         try {
             await fs.promises.unlink(mediaPath);
@@ -258,10 +281,9 @@ exports.deleteMediaFromSlideshow = async (req, res) => {
         console.error(err);
         res.status(500).json({
             status: "fail",
-            message: err.message || "Une erreur est survenue lors de la suppression du média",
+            message:
+                err.message ||
+                "Une erreur est survenue lors de la suppression du média",
         });
     }
 };
-
-
-
