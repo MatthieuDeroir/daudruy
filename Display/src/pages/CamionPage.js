@@ -1,7 +1,14 @@
 import React from "react";
 
 function CamionPage({ camionsData }) {
-  const getFontSize = (text, sizeLarge, sizeMedium, sizeSmall, limitLarge, limitSmall) => {
+  const getFontSize = (
+    text,
+    sizeLarge,
+    sizeMedium,
+    sizeSmall,
+    limitLarge,
+    limitSmall
+  ) => {
     if (text.length > limitLarge) {
       return sizeSmall;
     } else if (text.length > limitSmall) {
@@ -11,22 +18,26 @@ function CamionPage({ camionsData }) {
     }
   };
 
-  const getCellStyle = (text, fontSize) => 
-{
+  const getCellStyle = (text, fontSize) => {
     let style = {
-      textAlign: "center", 
-      width: "55%", 
-      fontSize: fontSize, 
-      margin: "-30px", 
-      padding: "0px"
+      textAlign: "center",
+      width: "55%",
+      fontSize: fontSize,
+      margin: "-30px",
+      padding: "0px",
     };
-    
+
     // Assumption: Each character is around 10px wide when font size is "30px"
     // This is a rough estimation and may not be accurate for all fonts and characters
     const estimatedTextWidth = text.length * 10;
 
     if (fontSize === "30px" && estimatedTextWidth > 462) {
-      style = {...style, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"};
+      style = {
+        ...style,
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+      };
     }
 
     return style;
@@ -37,7 +48,19 @@ function CamionPage({ camionsData }) {
       {camionsData.map((camion, index) =>
         camion.action === "go" ? (
           <tr key={index} style={{ height: "60px" }}>
-            <td style={getCellStyle(camion.immatriculation, getFontSize(camion.immatriculation, "50px", "40px", "30px", 9, 7))}>
+            <td
+              style={getCellStyle(
+                camion.immatriculation,
+                getFontSize(
+                  camion.immatriculation,
+                  "50px",
+                  "40px",
+                  "30px",
+                  9,
+                  7
+                )
+              )}
+            >
               {camion.immatriculation}
             </td>
             <td style={{ width: "20%", padding: "0px" }}>
@@ -68,11 +91,20 @@ function CamionPage({ camionsData }) {
                 </span>
               </div>
             </td>
-            <td style={{ width: "25%", fontSize: "30px", height: "60px", padding: "0px" }}>
+            <td
+              style={{
+                width: "25%",
+                fontSize: "30px",
+                height: "60px",
+                padding: "0px",
+              }}
+            >
               {camion.destination}
             </td>
           </tr>
-        ) : <tr key={index} style={{ height: "60px" }}></tr>
+        ) : (
+          <tr key={index} style={{ height: "60px" }}></tr>
+        )
       )}
     </table>
   );

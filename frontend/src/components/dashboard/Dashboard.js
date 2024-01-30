@@ -1,11 +1,11 @@
 import { Grid } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
+import { slideshowService } from "../../services/SlideshowService";
 import CamionPanel from "./camionPanel/CamionPanel";
 import Preview from "./preview/Preview";
-import SlideshowList from "./slideshow/SlideshowList";
 import SlideshowConfig from "./slideshow/SlideshowConfig";
-import { slideshowService } from "../../services/SlideshowService";
+import SlideshowList from "./slideshow/SlideshowList";
 
 function Dashboard() {
   const [slideshow, setSlideshow] = useState(null);
@@ -14,7 +14,6 @@ function Dashboard() {
   useEffect(() => {
     async function fetchData() {
       try {
-        
         getSlideshow();
       } catch (error) {
         console.error("Erreur lors de la récupération du slideshow:", error);

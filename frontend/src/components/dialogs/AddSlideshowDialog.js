@@ -1,12 +1,12 @@
-import React from "react";
 import {
+  Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   TextField,
-  Button,
 } from "@mui/material";
+import React from "react";
 
 function AddSlideshowDialog({ open, onClose, AddSlideshow }) {
   const [name, setName] = React.useState("");

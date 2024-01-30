@@ -1,5 +1,5 @@
-import { Box, Grid, IconButton, Paper, Stack, Typography } from "@mui/material";
 import VideoLabelIcon from "@mui/icons-material/VideoLabel";
+import { Box, Grid, IconButton, Paper, Stack, Typography } from "@mui/material";
 import React from "react";
 
 function Preview() {
@@ -28,11 +28,11 @@ function Preview() {
               paddingRight: { xs: 2, sm: 6 },
             }}
           >
-           {/*  <iframe
+            <iframe
               src="http://localhost:3001"
               title="Preview"
               style={{ border: "none", height: "240px", width: "480px" }}
-            ></iframe> */}
+            ></iframe>
           </Box>
         </Paper>
       </Grid>
